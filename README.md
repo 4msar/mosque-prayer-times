@@ -79,3 +79,13 @@ This will start the application on `http://localhost:8000`. You can access it in
 6. After modifying the prayer times, click on the "Save" button to save the changes.
 7. You can also click the top left location button to get your current location.
 8. You can also change the theme of the application by clicking on the Settings page.
+
+## Screenshots
+
+![Home](./public/images/home.png)
+
+![Settings](./public/images/settings.png)
+
+![Add or Edit](./public/images/add-or-edit.png)
+
+![Mosque Details](./public/images/view.png)

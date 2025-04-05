@@ -5,10 +5,12 @@ type Background = 'morning' | 'noon' | 'afternoon' | 'evening' | 'night' | 'jumm
 export const PrayerTime = ({ name, time, bg }: { bg: Background; name: string; time: string }) => {
     return (
         <div
-            className={`relative flex min-h-20 w-auto min-w-24 flex-col items-center justify-between gap-4 rounded-lg border border-gray-500 p-4 shadow-md transition-all duration-200 hover:scale-105`}
+            className={`relative flex min-h-20 w-auto min-w-24 items-center justify-between gap-4 overflow-hidden rounded-lg border border-gray-500 p-4 shadow-md transition-all duration-200 hover:scale-105`}
         >
-            <div className="text-lg font-semibold text-slate-600">{name}</div>
-            <div className="text-xl font-bold">{time}</div>
+            <div className="flex flex-col items-center justify-between gap-4 p-4">
+                <div className="text-lg font-semibold text-slate-600">{name}</div>
+                <div className="text-xl font-bold">{time}</div>
+            </div>
 
             <div className="absolute -right-8 bottom-0 h-2/3 w-2/3 opacity-30">
                 {bg === 'morning' && <Sunrise className="h-full w-full object-cover text-yellow-400" />}

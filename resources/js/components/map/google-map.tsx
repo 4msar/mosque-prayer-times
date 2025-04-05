@@ -1,11 +1,12 @@
-import { useGetNearByPlaces } from '@/hooks';
+import { useAppearance, useGetNearByPlaces } from '@/hooks';
 import { useLocationStore, useMosqueStore } from '@/store';
-import { AdvancedMarker, Map, MapMouseEvent, Pin, useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
+import { AdvancedMarker, ColorScheme, Map, MapMouseEvent, Pin, useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
 import { useEffect, useMemo } from 'react';
 
 export const GoogleMap = () => {
     const mapLib = useMapsLibrary('maps');
     const map = useMap();
+    const { appearance } = useAppearance();
 
     const currentLocation = useLocationStore((state) => state.location);
     const selected = useMosqueStore((state) => state.mosque);
@@ -45,6 +46,16 @@ export const GoogleMap = () => {
         }
     }, [currentLocation, map]);
 
+    const theme = useMemo<ColorScheme>(() => {
+        if (appearance === 'dark') {
+            return 'DARK';
+        } else if (appearance === 'light') {
+            return 'LIGHT';
+        } else {
+            return 'FOLLOW_SYSTEM';
+        }
+    }, [appearance]);
+
     return (
         <Map
             defaultCenter={{
@@ -54,6 +65,7 @@ export const GoogleMap = () => {
             defaultZoom={16}
             onClick={handleMapClick}
             mapId={'8883d749fdf0e73d'}
+            colorScheme={theme}
         >
             <AdvancedMarker position={center}>
                 <Pin background="#38bdf8" glyphColor="#082f49" borderColor="#0c4a6e">

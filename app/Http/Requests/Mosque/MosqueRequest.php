@@ -24,9 +24,19 @@ class MosqueRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:255'],
-            'city' => ['required', 'string', 'max:255'],
+            'map_url' => ['nullable', 'string', 'max:255'],
             'latitude' => ['required', 'numeric'],
             'longitude' => ['required', 'numeric'],
+
+            // Prayer times
+            'fajr' => ['string'],
+            'dhuhr' => ['string'],
+            'asr' => ['string'],
+            'maghrib' => ['string'],
+            'isha' => ['string'],
+            'sunrise' => ['string'],
+            'sunset' => ['string'],
+            'jummah' => ['string'],
         ];
     }
 }

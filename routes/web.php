@@ -6,7 +6,10 @@ use Inertia\Inertia;
 
 Route::get('/', [MosqueController::class, 'index'])->name('home');
 
-Route::resource('mosques', MosqueController::class);
+Route::controller(MosqueController::class)->group(function () {
+    Route::get('/mosques/{place}', 'show')->name('mosques.show');
+    Route::post('/mosques/{place}', 'update')->name('mosques.store');
+});
 
 Route::prefix('/hq')->group(function () {
     Route::middleware(['auth', 'verified'])->group(function () {

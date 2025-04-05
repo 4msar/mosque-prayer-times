@@ -1,10 +1,11 @@
 import { useGetNearByPlaces } from '@/hooks';
 import { useLocationStore, useMosqueStore } from '@/store';
-import { AdvancedMarker, Map, MapMouseEvent, Pin, useMapsLibrary } from '@vis.gl/react-google-maps';
-import { useMemo } from 'react';
+import { AdvancedMarker, Map, MapMouseEvent, Pin, useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
+import { useEffect, useMemo } from 'react';
 
 export const GoogleMap = () => {
     const mapLib = useMapsLibrary('maps');
+    const map = useMap();
 
     const currentLocation = useLocationStore((state) => state.location);
     const selected = useMosqueStore((state) => state.mosque);
@@ -35,6 +36,15 @@ export const GoogleMap = () => {
         }
     };
 
+    useEffect(() => {
+        if (currentLocation) {
+            map?.setCenter({
+                lat: currentLocation.latitude,
+                lng: currentLocation.longitude,
+            });
+        }
+    }, [currentLocation, map]);
+
     return (
         <Map
             defaultCenter={{
@@ -57,9 +67,9 @@ export const GoogleMap = () => {
                 </Pin>
             </AdvancedMarker>
 
-            {mosques.map((item, index) => (
-                <AdvancedMarker key={index} title={item.displayName} position={item.location} onClick={() => setSelected(item)}>
-                    <Pin background="#0d9488" glyphColor="#2dd4bf" borderColor={selected?.id === item.id ? '#d1fae5' : '#064e3b'} />
+            {mosques.map((item) => (
+                <AdvancedMarker key={item.id} title={item.displayName} position={item.location} onClick={() => setSelected(item)}>
+                    <Pin background={selected?.id === item.id ? '#2563eb' : '#0d9488'} glyphColor="#2dd4bf" borderColor="#064e3b" />
                 </AdvancedMarker>
             ))}
         </Map>

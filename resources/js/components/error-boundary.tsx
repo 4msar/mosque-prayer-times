@@ -16,7 +16,11 @@ export class ErrorBoundary extends React.Component<React.PropsWithChildren> {
 
     render() {
         if (this.state.hasError) {
-            return <h1>Something went wrong.</h1>;
+            return (
+                <div className="flex p-6">
+                    <h1 className="text-2xl font-semibold">Something went wrong.</h1>
+                </div>
+            );
         }
 
         return this.props.children;

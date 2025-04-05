@@ -7,42 +7,34 @@ use Illuminate\Database\Eloquent\Model;
 class Mosque extends Model
 {
     protected $fillable = [
+        'place_id',
         'name',
         'address',
-        'city',
-        'state',
-        'country',
-        'zip_code',
-        'phone',
-        'website',
-        'email',
+        'map_url',
         'latitude',
         'longitude',
-        'description',
-        'capacity',
-        'type',
-        'status'
+
+        // Prayer times
+        'fajr',
+        'dhuhr',
+        'asr',
+        'maghrib',
+        'isha',
+        'sunrise',
+        'sunset',
+        'jummah',
+        'last_updated'
     ];
 
     protected $casts = [
         'latitude' => 'float',
         'longitude' => 'float',
+        'last_updated' => 'datetime',
     ];
 
     protected $appends = [
         'location',
-        'full_address'
     ];
-
-    public function images()
-    {
-        return $this->morphMany(Image::class, 'model');
-    }
-
-    public function prayerTimes()
-    {
-        return $this->hasOne(PrayerTime::class);
-    }
 
     public function getLocationAttribute()
     {
@@ -50,11 +42,6 @@ class Mosque extends Model
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
         ];
-    }
-
-    public function getFullAddressAttribute()
-    {
-        return $this->address . ', ' . $this->city . ', ' . $this->state . ', ' . $this->country . ', ' . $this->zip_code;
     }
 
     /**

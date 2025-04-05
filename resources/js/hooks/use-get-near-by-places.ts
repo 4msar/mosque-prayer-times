@@ -1,22 +1,16 @@
 import { Location } from '@/store';
 import { useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export const useGetNearByPlaces = (location: Location | null) => {
     const placesLib = useMapsLibrary('places');
-    const mapLib = useMapsLibrary('maps');
+    useMapsLibrary('maps');
     const map = useMap();
 
     const [results, setResults] = useState<google.maps.places.Place[]>([]);
 
-    const center = useMemo(() => {
-        if (!location || !mapLib) return { lat: 0, lng: 0 };
-
-        return new google.maps.LatLng(location.latitude, location.longitude);
-    }, [location, mapLib]);
-
-    useEffect(() => {
-        if (!map || !placesLib) return;
+    const findMosques = useCallback(() => {
+        if (!map || !placesLib || !location) return;
 
         const request = {
             // required parameters
@@ -34,7 +28,7 @@ export const useGetNearByPlaces = (location: Location | null) => {
                 'types',
             ],
             locationRestriction: {
-                center,
+                center: new google.maps.LatLng(location.latitude, location.longitude),
                 radius: 500,
             },
             // optional parameters
@@ -45,9 +39,16 @@ export const useGetNearByPlaces = (location: Location | null) => {
         };
 
         placesLib.Place.searchNearby(request).then((response) => {
+            console.log('response', response);
+            if (!response.places) return;
+
             setResults(response.places.filter((place) => place.businessStatus === 'OPERATIONAL'));
         });
-    }, [location, map, placesLib, center]);
+    }, [map, placesLib, location]);
+
+    useEffect(() => {
+        findMosques();
+    }, [location, findMosques]);
 
     return results;
 };

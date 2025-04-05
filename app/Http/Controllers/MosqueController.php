@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Mosque\MosqueRequest;
+use App\Http\Requests\Mosque\PrayerRequest;
 use App\Models\Mosque;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -20,57 +21,36 @@ class MosqueController extends Controller
 
         return Inertia::render('mosques/index', [
             'mosques' => $mosques,
-            'filters' => $request->all('search', 'location'),
         ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Show the form for creating a new resource.
      */
-    public function store(MosqueRequest $request)
+    public function show($place)
     {
-        $data = $request->validated();
+        $mosque = Mosque::query()
+            ->where('place_id', $place)
+            ->firstOrFail();
 
-        $mosque = Mosque::create($data);
-
-        flashMessage("Mosque created successfully", "success");
-
-        return back();
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Mosque $mosque)
-    {
-        $mosque->load('prayers');
-
-        return Inertia::render('mosques/show', [
-            'mosque' => $mosque,
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Mosque $mosque)
-    {
-        //
+        return response()->json($mosque);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Mosque $mosque)
+    public function update(MosqueRequest $request, $place)
     {
-        //
-    }
+        $mosque = Mosque::query()
+            ->where('place_id', $place)
+            ->firstOrNew();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Mosque $mosque)
-    {
-        //
+        $payload = $request->validated();
+        $payload['place_id'] = $place;
+
+        $mosque->fill($payload);
+        $mosque->save();
+
+        return back();
     }
 }

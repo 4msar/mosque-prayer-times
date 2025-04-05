@@ -7,10 +7,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/compon
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { UserMenuContent } from '@/components/user-menu-content';
+import { useGetLocation } from '@/hooks';
 import { cn, getInitials } from '@/lib/utils';
+import { useLocationStore } from '@/store';
 import { SharedData, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutGrid, Menu } from 'lucide-react';
+import { LayoutGrid, LocateIcon, Menu } from 'lucide-react';
 import { PropsWithChildren } from 'react';
 
 const mainNavItems: NavItem[] = [
@@ -30,6 +32,16 @@ export const WebLayout = ({
 }>) => {
     const page = usePage<SharedData>();
     const { auth } = page.props;
+    const userLocation = useGetLocation();
+    const setLocation = useLocationStore((state) => state.setLocation);
+
+    const handleLocateMe = () => {
+        if (userLocation) {
+            setLocation(userLocation);
+        } else {
+            alert('Unable to get location');
+        }
+    };
 
     return (
         <>
@@ -95,11 +107,11 @@ export const WebLayout = ({
                     </div>
 
                     <div className="ml-auto flex items-center space-x-2">
-                        {/* <div className="relative flex items-center space-x-1">
-                            <Button variant="ghost" size="icon" className="group h-9 w-9 cursor-pointer">
-                                <Search className="!size-5 opacity-80 group-hover:opacity-100" />
+                        <div className="relative flex items-center space-x-1">
+                            <Button onClick={handleLocateMe} title="Locate me" variant="ghost" size="icon" className="group h-9 w-9 cursor-pointer">
+                                <LocateIcon className="!size-5 opacity-80 group-hover:opacity-100" />
                             </Button>
-                        </div> */}
+                        </div>
                         {auth.user && (
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>

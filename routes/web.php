@@ -10,14 +10,6 @@ Route::controller(MosqueController::class)->group(function () {
     Route::get('/mosques/{place}', 'show')->name('mosques.show');
     Route::post('/mosques/{place}', 'update')->name('mosques.store');
 });
-
-Route::prefix('/hq')->group(function () {
-    Route::middleware(['auth', 'verified'])->group(function () {
-        Route::get('dashboard', function () {
-            return Inertia::render('dashboard');
-        })->name('dashboard');
-    });
-
-    require __DIR__ . '/settings.php';
-    require __DIR__ . '/auth.php';
-});
+Route::get('settings/appearance', function () {
+    return Inertia::render('settings/appearance');
+})->name('settings.appearance');

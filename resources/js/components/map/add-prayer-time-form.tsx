@@ -59,7 +59,7 @@ export const AddPrayerTimesForm = ({
                 Please enter the prayer times for <span className="font-bold">{item?.displayName}</span>.
             </p>
             <form onSubmit={submit} className="mt-4 space-y-6">
-                <div className="grid gap-x-2 gap-y-1">
+                <div className="grid w-full gap-x-2 gap-y-1">
                     <Label htmlFor="fajr">Fajr</Label>
 
                     <Input
@@ -73,7 +73,7 @@ export const AddPrayerTimesForm = ({
 
                     <InputError className="mt-2" message={errors.fajr} />
                 </div>
-                <div className="grid gap-x-2 gap-y-1">
+                <div className="grid w-full gap-x-2 gap-y-1">
                     <Label htmlFor="dhuhr">Dhuhr</Label>
 
                     <Input
@@ -87,7 +87,7 @@ export const AddPrayerTimesForm = ({
 
                     <InputError className="mt-2" message={errors.dhuhr} />
                 </div>
-                <div className="grid gap-x-2 gap-y-1">
+                <div className="grid w-full gap-x-2 gap-y-1">
                     <Label htmlFor="asr">Asr</Label>
                     <Input
                         id="asr"
@@ -99,7 +99,7 @@ export const AddPrayerTimesForm = ({
                     />
                     <InputError className="mt-2" message={errors.asr} />
                 </div>
-                <div className="grid gap-x-2 gap-y-1">
+                <div className="grid w-full gap-x-2 gap-y-1">
                     <Label htmlFor="maghrib">Maghrib</Label>
                     <Input
                         id="maghrib"
@@ -111,7 +111,7 @@ export const AddPrayerTimesForm = ({
                     />
                     <InputError className="mt-2" message={errors.maghrib} />
                 </div>
-                <div className="grid gap-x-2 gap-y-1">
+                <div className="grid w-full gap-x-2 gap-y-1">
                     <Label htmlFor="isha">Isha</Label>
                     <Input
                         id="isha"
@@ -123,7 +123,7 @@ export const AddPrayerTimesForm = ({
                     />
                     <InputError className="mt-2" message={errors.isha} />
                 </div>
-                <div className="grid gap-x-2 gap-y-1">
+                <div className="grid w-full gap-x-2 gap-y-1">
                     <Label htmlFor="jummah">Jummah</Label>
                     <Input
                         id="jummah"

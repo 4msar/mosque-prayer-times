@@ -23,7 +23,7 @@ export const ItemDetails = ({ item, onClose }: { item: google.maps.places.Place 
                 side={isMobile ? 'bottom' : 'right'}
                 className="h-full w-full overflow-auto sm:max-w-md"
             >
-                <SheetHeader className="sticky top-0 z-10 border-b border-slate-200 bg-white">
+                <SheetHeader className="sticky top-0 z-10 border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-zinc-900">
                     <SheetClose className="absolute top-0 right-0 mt-2 mr-2" asChild>
                         <Button size="icon" variant="destructive" type="button">
                             <XIcon className="h-4 w-4" />

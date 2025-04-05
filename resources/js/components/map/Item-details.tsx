@@ -23,26 +23,35 @@ export const ItemDetails = ({ item, onClose }: { item: google.maps.places.Place 
                 side={isMobile ? 'bottom' : 'right'}
                 className="h-full w-full overflow-auto sm:max-w-md"
             >
-                <SheetHeader className="sticky top-0 z-10 border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-zinc-900">
-                    <SheetClose className="absolute top-0 right-0 mt-2 mr-2" asChild>
+                <SheetHeader className="sticky top-0 z-10 flex flex-row items-start justify-between border-b border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-zinc-900">
+                    <div>
+                        <SheetTitle>{item?.displayName}</SheetTitle>
+                        <SheetDescription className="flex flex-wrap items-center justify-between gap-2">
+                            <span>
+                                <span>{item?.formattedAddress}</span>
+                                {item?.nationalPhoneNumber && (
+                                    <>
+                                        <br />
+                                        <a className="font-semibold text-blue-900 underline" href={`tel:${item?.nationalPhoneNumber}`}>
+                                            {item?.nationalPhoneNumber}
+                                        </a>
+                                    </>
+                                )}
+                            </span>
+                        </SheetDescription>
+                        {item?.googleMapsURI && (
+                            <Button variant="destructive" type="button" className="mt-2 w-auto">
+                                <a href={item?.googleMapsURI} target="_blank" rel="noopener noreferrer">
+                                    Open in Google Maps
+                                </a>
+                            </Button>
+                        )}
+                    </div>
+                    <SheetClose asChild>
                         <Button size="icon" variant="destructive" type="button">
                             <XIcon className="h-4 w-4" />
                         </Button>
                     </SheetClose>
-                    <SheetTitle>{item?.displayName}</SheetTitle>
-                    <SheetDescription className="flex flex-wrap items-center justify-between gap-2">
-                        <span>
-                            <span>{item?.formattedAddress}</span>
-                            {item?.nationalPhoneNumber && (
-                                <>
-                                    <br />
-                                    <a className="font-semibold text-blue-900 underline" href={`tel:${item?.nationalPhoneNumber}`}>
-                                        {item?.nationalPhoneNumber}
-                                    </a>
-                                </>
-                            )}
-                        </span>
-                    </SheetDescription>
                 </SheetHeader>
 
                 {mosqueDetails && !edit ? (
@@ -52,16 +61,9 @@ export const ItemDetails = ({ item, onClose }: { item: google.maps.places.Place 
                             <Button variant="outline" onClick={() => setEdit(true)}>
                                 Edit Prayer Times
                             </Button>
-                            <Button variant={viewPhotos ? 'secondary' : 'ghost'} onClick={() => setViewPhotos((p) => !p)}>
+                            <Button className="hover:bg-gray-800" variant="secondary" onClick={() => setViewPhotos((p) => !p)}>
                                 {viewPhotos ? 'Hide Photos' : 'View Photos'}
                             </Button>
-                            {item?.googleMapsURI && (
-                                <Button variant="destructive" type="button">
-                                    <a href={item?.googleMapsURI} target="_blank" rel="noopener noreferrer">
-                                        Open in Google Maps
-                                    </a>
-                                </Button>
-                            )}
                         </div>
                     </>
                 ) : (

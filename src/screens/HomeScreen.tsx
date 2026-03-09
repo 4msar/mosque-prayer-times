@@ -4,7 +4,9 @@ import MapView, { Marker, PROVIDER_DEFAULT, PROVIDER_GOOGLE } from 'react-native
 import * as Location from 'expo-location';
 import { fetchNearbyMosques } from '../services/googlePlaces';
 import { useNavigation } from '@react-navigation/native';
-import markerIcon from '../../assets/marker.png'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import markerIcon from '../../assets/marker.png';
+import { RootStackParamList } from '../types';
 
 const defaultLocation = {
     // Bangladesh
@@ -15,10 +17,10 @@ const defaultLocation = {
 export default function HomeScreen() {
     const [location, setLocation] = useState(defaultLocation);
     const [userLocation, setUserLocation] = useState(null);
-    const [mosques, setMosques] = useState([]);
+    const [mosques, setMosques] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const navigation = useNavigation();
-    const mapRef = useRef(null);
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const mapRef = useRef<MapView>(null);
 
     const handleMapOnPress = (evt) => {
         if (evt.nativeEvent.action === 'marker-press') {

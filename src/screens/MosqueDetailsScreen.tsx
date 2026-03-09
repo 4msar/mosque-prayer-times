@@ -5,10 +5,11 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { fetchPlaceDetails } from '../services/googlePlaces';
 import dayjs from 'dayjs';
+import { MosqueDetailsScreenProps } from '../types';
 
-export default function MosqueDetailsScreen({ route }) {
+export default function MosqueDetailsScreen({ route }: MosqueDetailsScreenProps) {
     const { placeId } = route.params;
-    const [mosque, setMosque] = useState({});
+    const [mosque, setMosque] = useState<any>({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [dataExists, setDataExists] = useState(false);
@@ -122,12 +123,12 @@ export default function MosqueDetailsScreen({ route }) {
     }
 
     const handleLinkOpen = () => {
-        if (mosque.url) {
+        if (mosque?.url) {
             Linking.openURL(mosque.url).catch(err => console.error("Couldn't load page", err));
         }
     }
 
-    const PrayerDisplay = ({ label, field }) => (
+    const PrayerDisplay = ({ label, field }: { label: string; field: keyof typeof prayerTimes }) => (
         < View style={styles.displayRow} >
             <Text style={styles.displayLabel}>{label}</Text>
             <Text style={styles.displayValue}>{prayerTimes[field] || 'Not set'}</Text>
@@ -368,8 +369,8 @@ const styles = StyleSheet.create({
     }
 });
 
-const PrayerInput = ({ label, field, value, setValue }) => {
-    const handleTimeChange = (text) => {
+const PrayerInput = ({ label, field, value, setValue }: { label: string; field: string; value: string; setValue: (field: string, text: string) => void }) => {
+    const handleTimeChange = (text: string) => {
         setValue(field, text);
     };
 

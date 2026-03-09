@@ -4,19 +4,21 @@ import { db } from '../services/firebaseConfig';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { fetchPlaceDetails } from '../services/googlePlaces';
+import dayjs from 'dayjs';
 
 export default function MosqueDetailsScreen({ route }) {
     const { placeId } = route.params;
     const [mosque, setMosque] = useState({});
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [dataExists, setDataExists] = useState(false);
     const [prayerTimes, setPrayerTimes] = useState({
-        fajr: new Date(),
-        dhuhr: new Date(),
-        asr: new Date(),
-        maghrib: new Date(),
-        isha: new Date(),
-        jummah: new Date(),
+        fajr: "",
+        dhuhr: "",
+        asr: "",
+        maghrib: "",
+        isha: "",
+        jummah: "",
         lastUpdated: null,
     });
     const { name = route.params.name, formatted_address: address } = mosque || {};
@@ -30,15 +32,16 @@ export default function MosqueDetailsScreen({ route }) {
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     const payload = {
-                        fajr: parseTimeToDate(data.prayerTimes.fajr),
-                        dhuhr: parseTimeToDate(data.prayerTimes.dhuhr),
-                        asr: parseTimeToDate(data.prayerTimes.asr),
-                        maghrib: parseTimeToDate(data.prayerTimes.maghrib),
-                        isha: parseTimeToDate(data.prayerTimes.isha),
-                        jummah: parseTimeToDate(data.prayerTimes.jummah),
-                        lastUpdated: data.lastUpdated?.toDate().toLocaleString() || 'Unknown',
+                        ...data.prayerTimes,
+                        lastUpdated: data.lastUpdated?.toDate()?.toLocaleDateString?.('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: true,
+                        }) || 'Unknown',
                     };
-                    console.log({ payload })
                     setPrayerTimes(payload);
                     setDataExists(true);
                 } else {
@@ -62,6 +65,10 @@ export default function MosqueDetailsScreen({ route }) {
     }, [placeId]);
 
     const handleSave = async () => {
+        if (error !== null) {
+            Alert.alert('Error', error);
+            return;
+        }
         try {
             setLoading(true);
             const docRef = doc(db, 'mosques', placeId);
@@ -72,12 +79,12 @@ export default function MosqueDetailsScreen({ route }) {
                 latitude: mosque.geometry.location.lat || route.params.latitude,
                 longitude: mosque.geometry.location.lng || route.params.longitude,
                 prayerTimes: {
-                    fajr: formatTime(prayerTimes.fajr),
-                    dhuhr: formatTime(prayerTimes.dhuhr),
-                    asr: formatTime(prayerTimes.asr),
-                    maghrib: formatTime(prayerTimes.maghrib),
-                    isha: formatTime(prayerTimes.isha),
-                    jummah: formatTime(prayerTimes.jummah),
+                    fajr: prayerTimes.fajr,
+                    dhuhr: prayerTimes.dhuhr,
+                    asr: prayerTimes.asr,
+                    maghrib: prayerTimes.maghrib,
+                    isha: prayerTimes.isha,
+                    jummah: prayerTimes.jummah,
                 },
                 lastUpdated: new Date()
             };
@@ -100,6 +107,14 @@ export default function MosqueDetailsScreen({ route }) {
     };
 
     const handleSetValue = (name, value) => {
+        const timeRegex = new RegExp('^([1-9]|0[1-9]|1[0-2]):[0-5][0-9] ([AaPp][Mm])$');
+
+        if (timeRegex.test(value)) {
+            setError(null);
+        } else {
+            setError("Invalid time format!");
+        }
+
         setPrayerTimes(prev => ({
             ...prev,
             [name]: value
@@ -113,10 +128,10 @@ export default function MosqueDetailsScreen({ route }) {
     }
 
     const PrayerDisplay = ({ label, field }) => (
-        <View style={styles.displayRow}>
+        < View style={styles.displayRow} >
             <Text style={styles.displayLabel}>{label}</Text>
-            <Text style={styles.displayValue}>{formatTime(prayerTimes[field]) || 'Not set'}</Text>
-        </View>
+            <Text style={styles.displayValue}>{prayerTimes[field] || 'Not set'}</Text>
+        </View >
     );
 
     if (loading) {
@@ -197,7 +212,13 @@ export default function MosqueDetailsScreen({ route }) {
                         setValue={handleSetValue}
                     />
 
-                    <TouchableOpacity style={styles.button} onPress={handleSave}>
+                    {error && <Text style={styles.errorText}>{error}</Text>}
+
+                    <TouchableOpacity
+                        disabled={error !== null}
+                        style={styles.button}
+                        onPress={handleSave}
+                    >
                         <Text style={styles.buttonText}>Save Times</Text>
                     </TouchableOpacity>
 
@@ -340,47 +361,27 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
+    errorText: {
+        color: "red",
+        marginTop: 4,
+        marginBottom: 4
+    }
 });
 
-
-const formatTime = (date) => {
-    try {
-        if (typeof date === 'string') {
-            const dateIns = parseTimeToDate(date);
-            return dayjs(dateIns).format("h:mm A");
-        }
-        return dayjs(date).format("h:mm A");
-    } catch (e) {
-        return ""
-    }
-}
-
-const parseTimeToDate = (time) => {
-    try {
-        const date = dayjs(time, "h:mm A");
-        return date.toDate();
-    } catch (e) {
-        return new Date();
-    }
-}
-
 const PrayerInput = ({ label, field, value, setValue }) => {
+    const handleTimeChange = (text) => {
+        setValue(field, text);
+    };
 
     return (
         <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>{label}</Text>
-            <DateTimePicker
-                mode='time'
-                is24Hour={false}
-                value={new Date(value)}
-                onChange={(event, date) => {
-                    if (date) {
-                        setValue(field, date)
-                    }
-                }}
-                style={{
-                    flex: 1,
-                }}
+            <TextInput
+                style={styles.input}
+                value={value}
+                onChangeText={handleTimeChange}
+                placeholder="05:15 AM"
+                placeholderTextColor="#999"
             />
         </View>
     );

@@ -9,10 +9,22 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/metro-runtime": "~55.0.6",
+    "@react-native-community/datetimepicker": "^8.6.0",
+    "@react-navigation/native": "^7.1.33",
+    "@react-navigation/native-stack": "^7.14.4",
+    "dayjs": "^1.11.19",
     "expo": "~55.0.5",
+    "expo-location": "~55.1.2",
     "expo-status-bar": "~55.0.4",
+    "firebase": "^12.10.0",
     "react": "19.2.0",
-    "react-native": "0.83.2"
+    "react-dom": "19.2.0",
+    "react-native": "0.83.2",
+    "react-native-maps": "1.26.20",
+    "react-native-safe-area-context": "~5.6.2",
+    "react-native-screens": "~4.23.0",
+    "react-native-web": "^0.21.0"
   },
   "private": true
 }

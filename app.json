@@ -35,6 +35,15 @@
         "projectId": "51e72168-20f6-41f4-bad6-6c00807670e6"
       }
     },
-    "owner": "4msar"
+    "owner": "4msar",
+    "plugins": [
+      [
+        "react-native-maps",
+        {
+          "androidGoogleMapsApiKey": "process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY",
+          "iosGoogleMapsApiKey": "process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY"
+        }
+      ]
+    ]
   }
 }

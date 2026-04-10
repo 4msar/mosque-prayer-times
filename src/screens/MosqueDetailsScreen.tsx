@@ -9,12 +9,14 @@ import {
     TouchableOpacity,
     Alert,
     Linking,
+    Platform,
 } from "react-native";
 import { db } from "../services/firebaseConfig";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { fetchPlaceDetails } from "../services/googlePlaces";
 import dayjs from "dayjs";
 import { MosqueDetailsScreenProps } from "../types";
+import { useMosqueDetails } from "../hooks/use-mosque-details";
 
 export default function MosqueDetailsScreen({
     route,
@@ -24,6 +26,7 @@ export default function MosqueDetailsScreen({
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [dataExists, setDataExists] = useState(false);
+    const place = useMosqueDetails(placeId);
     const [prayerTimes, setPrayerTimes] = useState({
         fajr: "5:00 AM",
         dhuhr: "01:30 PM",
@@ -76,8 +79,14 @@ export default function MosqueDetailsScreen({
             }
         });
 
+        if (Platform.OS === "web") {
+            //
+        }
+
         fetchPrayerTimes();
     }, [placeId]);
+
+    console.log({ place });
 
     const handleSave = async () => {
         if (error !== null) {

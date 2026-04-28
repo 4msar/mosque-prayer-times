@@ -1,9 +1,5 @@
 import type { PrayerKey, PrayerTimes } from "@/types";
-import dayjs from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat";
-
-dayjs.extend(customParseFormat);
-
+import dayjs from "@/lib/dayjs";
 
 export const defaultPrayerTimes: PrayerTimes = {
     fajr: "5:00 AM",
@@ -36,10 +32,10 @@ export function getNextPrayer(times: PrayerTimes): PrayerKey | null {
 
         // check if today is friday and the prayer is jummah
         if (now.day() === 5 && key === "jummah") {
-            if (t.isValid() && t.isAfter(now, "minute")) return key;
+            if (t.isValid() && t.isBefore(now, "minute")) return key;
         }
 
-        if (t.isValid() && t.isAfter(now, "minute")) return key;
+        if (t.isValid() && t.isBefore(now, "minute")) return key;
     }
 
     return null;

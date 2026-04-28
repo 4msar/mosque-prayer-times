@@ -32,6 +32,10 @@ export interface PrayerTimes {
 }
 
 export interface PrayerDetails {
+    name: string;
+    address: string;
+    latitude: number;
+    longitude: number;
     prayerTimes: PrayerTimes;
     lastUpdated: Timestamp | null;
 }

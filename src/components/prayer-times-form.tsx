@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { db } from "@/services/firebaseConfig";
 import { PRAYER_LABELS, timeRegex } from "@/services/helpers";
 import type { PrayerKey, PrayerTimes } from "@/types";
-import dayjs from "dayjs";
+import dayjs from "@/lib/dayjs";
 import { doc, setDoc } from "firebase/firestore";
 import {
     Loader2,

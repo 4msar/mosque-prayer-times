@@ -3,8 +3,7 @@ import { useMosqueDetails } from "@/hooks/use-mosque-details";
 import { usePrayerDetails } from "@/hooks/use-prayer-details";
 import { defaultPrayerTimes } from "@/services/helpers";
 import type { MosqueDetailsContentProps } from "@/types";
-import dayjs from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat";
+import dayjs from "@/lib/dayjs";
 import { Timestamp } from "firebase/firestore";
 import { Clock, Pencil } from "lucide-react";
 import { useState } from "react";
@@ -12,8 +11,6 @@ import { MosqueHeaderBanner } from "./mosque-header-banner";
 import { PrayerTimesDisplay } from "./prayer-times-display";
 import { PrayerTimesForm } from "./prayer-times-form";
 import { Skeleton } from "./ui/skeleton";
-
-dayjs.extend(customParseFormat);
 
 export function MosqueDetailsContent({
   placeId,

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { MosqueDetailsContentProps } from "@/types";
 import { useSettingsStore } from "@/store/settings-store";
-import dayjs from "dayjs";
+import dayjs from "@/lib/dayjs";
 import {
     Bookmark,
     ExternalLink,

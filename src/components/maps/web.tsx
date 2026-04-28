@@ -9,8 +9,10 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { useGetLocation } from "@/hooks/use-location";
 import { useGetNearByPlaces } from "@/hooks/use-nearby-places";
+import { useOnlineStatus } from "@/hooks/use-online-status";
 import { FloatingButton } from "@/components/floating-button";
 import { MosqueDetailsOverlay } from "@/components/mosque-details-overlay";
+import { WifiOff } from "lucide-react";
 
 const markerImage = "/marker.png";
 
@@ -32,6 +34,7 @@ export const WebMaps = () => {
     const map = useMap();
     const [selectedMosque, setSelectedMosque] = useState<SelectedMosque | null>(null);
     const [overlayOpen, setOverlayOpen] = useState(false);
+    const isOnline = useOnlineStatus();
 
     const currentLocation = useGetLocation();
 
@@ -85,6 +88,19 @@ export const WebMaps = () => {
             });
         }
     }, [currentLocation, map]);
+
+    if (!isOnline) {
+        return (
+            <div className="flex h-full w-full flex-col items-center justify-center gap-4 bg-muted/40 text-muted-foreground">
+                <WifiOff className="h-12 w-12 opacity-50" />
+                <div className="text-center">
+                    <p className="text-lg font-semibold">You are offline</p>
+                    <p className="text-sm">Map requires an internet connection.</p>
+                    <p className="text-sm">Please reconnect to view nearby mosques.</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="relative h-full w-full">

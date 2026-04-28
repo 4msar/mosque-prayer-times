@@ -38,7 +38,7 @@ export const WebMaps = () => {
     const isOnline = useOnlineStatus();
 
     const currentLocation = useGetLocation();
-    const { radius } = useSettingsStore();
+    const { radius, darkMode } = useSettingsStore();
 
     const center = useMemo(() => {
         if (!currentLocation || !mapLib)
@@ -114,6 +114,7 @@ export const WebMaps = () => {
                 defaultZoom={16}
                 onClick={handleMapClick}
                 mapId={"8883d749fdf0e73d"}
+                colorScheme={darkMode ? "DARK" : "LIGHT"}
                 className="h-full w-full"
             >
                 {currentLocation && (

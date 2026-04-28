@@ -1,4 +1,3 @@
-import { MapPin } from "lucide-react";
 import { WebMaps } from "@/components/maps/web";
 import { Header } from "@/components/layouts";
 

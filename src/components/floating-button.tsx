@@ -1,31 +1,22 @@
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { LocateFixed } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-export const FloatingButton = ({ onPress }) => {
+interface FloatingButtonProps {
+    onClick: () => void;
+    className?: string;
+}
+
+export const FloatingButton = ({ onClick, className }: FloatingButtonProps) => {
     return (
-        <TouchableOpacity style={styles.floatingButton} onPress={onPress}>
-            <Text
-                style={{
-                    color: "#fff",
-                    fontSize: 32,
-                    transform: "rotate(-45deg)",
-                }}
-            >
-                ➤
-            </Text>
-        </TouchableOpacity>
+        <button
+            onClick={onClick}
+            className={cn(
+                "absolute bottom-6 right-6 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-green-600 text-white shadow-lg transition-transform hover:scale-105 hover:bg-green-700 active:scale-95",
+                className,
+            )}
+            aria-label="Center map on my location"
+        >
+            <LocateFixed className="h-5 w-5" />
+        </button>
     );
 };
-
-const styles = StyleSheet.create({
-    floatingButton: {
-        position: "absolute",
-        bottom: 20,
-        right: 20,
-        width: 48,
-        height: 48,
-        borderRadius: 24,
-        backgroundColor: "#22ad65ff",
-        justifyContent: "center",
-        alignItems: "center",
-    },
-});

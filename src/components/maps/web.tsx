@@ -1,8 +1,5 @@
-import { useGetLocation } from "@/src/hooks/use-location";
-import { useGetNearByPlaces } from "@/src/hooks/use-nearby-places";
 import {
     AdvancedMarker,
-    APIProvider,
     Map,
     MapMouseEvent,
     Pin,
@@ -10,14 +7,13 @@ import {
     useMapsLibrary,
 } from "@vis.gl/react-google-maps";
 import { useEffect, useMemo, useState } from "react";
-import { FloatingButton } from "../floating-button";
-import markerImage from "@/assets/marker.png";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "@/src/types";
+import { useNavigate } from "react-router-dom";
+import { useGetLocation } from "@/hooks/use-location";
+import { useGetNearByPlaces } from "@/hooks/use-nearby-places";
+import { FloatingButton } from "@/components/floating-button";
+const markerImage = "/marker.png";
 
 export const defaultLocation = {
-    // Bangladesh
     latitude: 23.7706621,
     longitude: 90.3751423,
 };
@@ -25,9 +21,8 @@ export const defaultLocation = {
 export const WebMaps = () => {
     const mapLib = useMapsLibrary("maps");
     const map = useMap();
-    const navigation =
-        useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-    const [placeId, setPlaceId] = useState<string | null>(null);
+    const navigate = useNavigate();
+    const [_placeId, setPlaceId] = useState<string | null>(null);
 
     const currentLocation = useGetLocation();
 
@@ -44,47 +39,29 @@ export const WebMaps = () => {
         );
     }, [currentLocation, mapLib]);
 
-    const mosques = useGetNearByPlaces(currentLocation);
+    const mosques = useGetNearByPlaces(currentLocation ?? null);
 
     const handleMapClick = (event: MapMouseEvent) => {
-        console.log({ event });
-
         if (!event.detail.latLng) return;
-
-        // setLocation({
-        //     latitude: event.detail.latLng.lat,
-        //     longitude: event.detail.latLng.lng,
-        // });
 
         if (event.detail.placeId) {
             setPlaceId(event.detail.placeId);
-
-            // navigation.navigate("MosqueDetails", {
-            //     placeId: mosque.place_id,
-            //     name: mosque.name,
-            //     address: mosque.vicinity,
-            //     latitude: mosque.geometry.location.lat,
-            //     longitude: mosque.geometry.location.lng,
-            // });
         }
     };
 
-    const handleMosqueClick = (mosque: any) => {
-        console.log({ mosque });
-        // return;
-        navigation.navigate("MosqueDetails", {
-            placeId: mosque.id,
-            name: mosque.displayName,
-            address: mosque.formattedAddress,
-            latitude: mosque.location.lat(),
-            longitude: mosque.location.lng(),
+    const handleMosqueClick = (mosque: google.maps.places.Place) => {
+        navigate(`/mosque/${mosque.id}`, {
+            state: {
+                name: mosque.displayName,
+                address: mosque.formattedAddress,
+                latitude: mosque.location?.lat(),
+                longitude: mosque.location?.lng(),
+            },
         });
     };
 
-    const handleButtonClick = () => {
-        console.log({ currentLocation, map });
+    const handleLocateMe = () => {
         if (!currentLocation) return;
-
         map?.setCenter({
             lat: currentLocation.latitude,
             lng: currentLocation.longitude,
@@ -101,52 +78,41 @@ export const WebMaps = () => {
     }, [currentLocation, map]);
 
     return (
-        <>
+        <div className="relative h-full w-full">
             <Map
                 defaultCenter={{
-                    lat: currentLocation?.latitude || 0,
-                    lng: currentLocation?.longitude || 0,
+                    lat: defaultLocation.latitude,
+                    lng: defaultLocation.longitude,
                 }}
                 defaultZoom={16}
                 onClick={handleMapClick}
                 mapId={"8883d749fdf0e73d"}
-                // colorScheme={theme}
+                className="h-full w-full"
             >
-                <AdvancedMarker position={center}>
-                    <Pin
-                        background="#38bdf8"
-                        glyphColor="#082f49"
-                        borderColor="#0c4a6e"
-                    >
-                        <span
-                            style={{
-                                fontWeight: "bold",
-                            }}
+                {currentLocation && (
+                    <AdvancedMarker position={center}>
+                        <Pin
+                            background="#38bdf8"
+                            glyphColor="#082f49"
+                            borderColor="#0c4a6e"
                         >
-                            You
-                        </span>
-                    </Pin>
-                </AdvancedMarker>
+                            <span className="font-bold text-xs">You</span>
+                        </Pin>
+                    </AdvancedMarker>
+                )}
 
                 {mosques.map((item) => (
                     <AdvancedMarker
                         key={item.id}
-                        title={item.displayName}
+                        title={item.displayName ?? undefined}
                         position={item.location}
                         onClick={() => handleMosqueClick(item)}
                     >
-                        {/* <Pin
-                            // background={
-                            //     selected?.id === item.id ? "#2563eb" : "#0d9488"
-                            // }
-                            glyphColor="#2dd4bf"
-                            borderColor="#064e3b"
-                        /> */}
-                        <img src={markerImage} width={48} height={48} />
+                        <img src={markerImage} width={40} height={40} alt={item.displayName ?? "mosque"} />
                     </AdvancedMarker>
                 ))}
             </Map>
-            <FloatingButton onPress={handleButtonClick} />
-        </>
+            <FloatingButton onClick={handleLocateMe} />
+        </div>
     );
 };

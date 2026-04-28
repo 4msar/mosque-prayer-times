@@ -13,7 +13,8 @@ import {
     DrawerTitle,
     DrawerDescription,
 } from "@/components/ui/drawer";
-import { MosqueDetailsContent, type MosqueDetailsContentProps } from "./mosque-details-content";
+import { MosqueDetailsContent } from "./mosque-details-content";
+import { MosqueDetailsContentProps } from "@/types";
 
 interface MosqueDetailsOverlayProps extends MosqueDetailsContentProps {
     open: boolean;
@@ -48,7 +49,7 @@ export function MosqueDetailsOverlay({
                     <DrawerHeader className="sr-only">
                         <DrawerTitle>{initialName ?? "Mosque Details"}</DrawerTitle>
                         <DrawerDescription>Prayer times and mosque information</DrawerDescription>
-                    </DrawerHeader>
+                </DrawerHeader>
                     <div className="overflow-y-auto px-4 pb-6 pt-2">{content}</div>
                 </DrawerContent>
             </Drawer>
@@ -57,7 +58,7 @@ export function MosqueDetailsOverlay({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-h-[90vh] max-w-lg overflow-y-auto p-5">
+            <DialogContent className="max-h-[90vh] max-w-lg overflow-y-auto p-5 [&_.close-button]:top-1 [&_.close-button]:right-1">
                 <DialogHeader className="sr-only">
                     <DialogTitle>{initialName ?? "Mosque Details"}</DialogTitle>
                     <DialogDescription>Prayer times and mosque information</DialogDescription>

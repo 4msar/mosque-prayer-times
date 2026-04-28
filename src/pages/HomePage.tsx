@@ -1,15 +1,11 @@
 import { MapPin } from "lucide-react";
 import { WebMaps } from "@/components/maps/web";
+import { Header } from "@/components/layouts";
 
 export default function HomePage() {
     return (
         <div className="flex h-full flex-col">
-            <header className="flex items-center gap-2 border-b border-gray-200 bg-white px-4 py-3 shadow-sm">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-600">
-                    <MapPin className="h-4 w-4 text-white" />
-                </div>
-                <h1 className="text-lg font-semibold text-gray-900">Nearby Mosques</h1>
-            </header>
+            <Header />
             <main className="relative flex-1 overflow-hidden">
                 <WebMaps />
             </main>

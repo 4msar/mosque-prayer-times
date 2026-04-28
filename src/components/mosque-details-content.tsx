@@ -1,25 +1,20 @@
-import { Button } from "@/components/ui/button";
-import { useMosqueDetails } from "@/hooks/use-mosque-details";
-import { usePrayerDetails } from "@/hooks/use-prayer-details";
-import { defaultPrayerTimes } from "@/services/helpers";
-import type { MosqueDetailsContentProps } from "@/types";
-import dayjs from "@/lib/dayjs";
-import { Timestamp } from "firebase/firestore";
-import { Clock, Pencil } from "lucide-react";
-import { useState } from "react";
-import { MosqueHeaderBanner } from "./mosque-header-banner";
-import { PrayerTimesDisplay } from "./prayer-times-display";
-import { PrayerTimesForm } from "./prayer-times-form";
-import { Skeleton } from "./ui/skeleton";
+import { Button } from '@/components/ui/button';
+import { useMosqueDetails } from '@/hooks/use-mosque-details';
+import { usePrayerDetails } from '@/hooks/use-prayer-details';
+import { defaultPrayerTimes } from '@/services/helpers';
+import type { MosqueDetailsContentProps } from '@/types';
+import dayjs from '@/lib/dayjs';
+import { Timestamp } from 'firebase/firestore';
+import { Clock, Pencil } from 'lucide-react';
+import { useState } from 'react';
+import { MosqueHeaderBanner } from './mosque-header-banner';
+import { PrayerTimesDisplay } from './prayer-times-display';
+import { PrayerTimesForm } from './prayer-times-form';
+import { Skeleton } from './ui/skeleton';
 
-export function MosqueDetailsContent({
-  placeId,
-  ...initialDetails
-}: MosqueDetailsContentProps) {
-  const { data: mosqueDetails, loading: mosqueDetailsLoading } =
-    useMosqueDetails(placeId);
-  const { data: prayerDetails, loading: prayerDetailsLoading } =
-    usePrayerDetails(placeId);
+export function MosqueDetailsContent({ placeId, ...initialDetails }: MosqueDetailsContentProps) {
+  const { data: mosqueDetails, loading: mosqueDetailsLoading } = useMosqueDetails(placeId);
+  const { data: prayerDetails, loading: prayerDetailsLoading } = usePrayerDetails(placeId);
   const prayerTimes = prayerDetails?.prayerTimes ?? defaultPrayerTimes;
   const [isEditing, setIsEditing] = useState(false);
 
@@ -44,10 +39,7 @@ export function MosqueDetailsContent({
     <div className="flex flex-col">
       {/* Mosque header banner */}
       {mosqueDetails && (
-        <MosqueHeaderBanner
-          mosqueDetails={mosqueDetails}
-          initialDetails={initialDetails}
-        />
+        <MosqueHeaderBanner mosqueDetails={mosqueDetails} initialDetails={initialDetails} />
       )}
 
       {/* Prayer times section */}
@@ -72,9 +64,7 @@ export function MosqueDetailsContent({
           )}
         </div>
 
-        {prayerDetails && !isEditing && (
-          <PrayerTimesDisplay prayerTimes={prayerTimes} />
-        )}
+        {prayerDetails && !isEditing && <PrayerTimesDisplay prayerTimes={prayerTimes} />}
         {mosqueDetails && isEditing && (
           <PrayerTimesForm
             mosqueDetails={mosqueDetails}
@@ -85,25 +75,20 @@ export function MosqueDetailsContent({
         )}
         {(!mosqueDetails || !prayerDetails) && !isEditing && (
           <div className="flex min-h-[260px] items-center justify-center">
-            <p className="text-sm text-muted-foreground">
-              No prayer times available
-            </p>
+            <p className="text-sm text-muted-foreground">No prayer times available</p>
           </div>
         )}
 
         {isEditing && !mosqueDetails && (
           <div className="flex min-h-[260px] items-center justify-center">
-            <p className="text-sm text-muted-foreground">
-              No mosque details available
-            </p>
+            <p className="text-sm text-muted-foreground">No mosque details available</p>
           </div>
         )}
 
         <p className="text-center text-xs text-muted-foreground mt-4">
           {prayerDetails?.lastUpdated && (
             <span className="text-xs text-muted-foreground">
-              Last Updated:{" "}
-              {getDate(prayerDetails.lastUpdated).format("D MMM YYYY, hh:mm A")}
+              Last Updated: {getDate(prayerDetails.lastUpdated).format('D MMM YYYY, hh:mm A')}
             </span>
           )}
         </p>

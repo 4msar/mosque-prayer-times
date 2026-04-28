@@ -1,19 +1,19 @@
-import { Button } from "@/components/ui/button";
-import { Close as DialogClose } from "@radix-ui/react-dialog";
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useSettingsStore } from "@/store/settings-store";
-import { Bookmark, MapPin, Settings2, Trash2, ArrowUpDown, Star } from "lucide-react";
-import { Link } from "react-router-dom";
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useSettingsStore } from '@/store/settings-store';
+import { Close as DialogClose } from '@radix-ui/react-dialog';
+import { ArrowUpDown, Bookmark, MapPin, Settings2, Star, Trash2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const RADIUS_OPTIONS = [100, 500, 1000, 2000];
 
@@ -27,6 +27,7 @@ export function SettingsDialog() {
     setDarkMode,
     bookmarks,
     removeBookmark,
+    setLocationFromMap,
   } = useSettingsStore();
 
   return (
@@ -75,15 +76,30 @@ export function SettingsDialog() {
                 <Label htmlFor="dark-mode" className="text-sm font-medium">
                   Dark Mode
                 </Label>
-                <p className="text-xs text-muted-foreground">
-                  Switch between light and dark theme
-                </p>
+                <p className="text-xs text-muted-foreground">Switch between light and dark theme</p>
               </div>
-              <Switch
-                id="dark-mode"
-                checked={darkMode}
-                onCheckedChange={setDarkMode}
-              />
+              <Switch id="dark-mode" checked={darkMode} onCheckedChange={setDarkMode} />
+            </div>
+
+            <div className="border-t" />
+
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="set-location-from-map" className="text-sm font-medium">
+                  Set location from map
+                </Label>
+                <p className="text-xs text-muted-foreground">Set location from the map</p>
+              </div>
+              <DialogClose asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setLocationFromMap(true)}
+                  className="border"
+                >
+                  <MapPin className="h-4 w-4 text-green-600" />
+                </Button>
+              </DialogClose>
             </div>
 
             <div className="border-t" />
@@ -118,13 +134,17 @@ export function SettingsDialog() {
                     type="button"
                     onClick={() => setRadius(r)}
                     className={`rounded px-1 py-0.5 transition-colors hover:text-foreground ${
-                      radius === r ? "font-semibold text-green-600" : ""
+                      radius === r ? 'font-semibold text-green-600' : ''
                     }`}
                   >
                     {r >= 1000 ? `${r / 1000}km` : `${r}m`}
                   </button>
                 ))}
               </div>
+
+              <p className="text-xs italic text-muted-foreground">
+                Max search result count is 20, and the radius is the distance from your location.
+              </p>
             </div>
 
             <div className="border-t" />
@@ -133,18 +153,16 @@ export function SettingsDialog() {
             <div className="space-y-3">
               <div>
                 <Label className="text-sm font-medium">Sort Results By</Label>
-                <p className="text-xs text-muted-foreground">
-                  How nearby mosques are ranked
-                </p>
+                <p className="text-xs text-muted-foreground">How nearby mosques are ranked</p>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
-                  onClick={() => setRankPreference("DISTANCE")}
+                  onClick={() => setRankPreference('DISTANCE')}
                   className={`flex items-center justify-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium transition-colors ${
-                    rankPreference === "DISTANCE"
-                      ? "border-green-600 bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300"
-                      : "border-border hover:bg-muted/50"
+                    rankPreference === 'DISTANCE'
+                      ? 'border-green-600 bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300'
+                      : 'border-border hover:bg-muted/50'
                   }`}
                 >
                   <ArrowUpDown className="h-3.5 w-3.5" />
@@ -152,11 +170,11 @@ export function SettingsDialog() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setRankPreference("POPULARITY")}
+                  onClick={() => setRankPreference('POPULARITY')}
                   className={`flex items-center justify-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium transition-colors ${
-                    rankPreference === "POPULARITY"
-                      ? "border-green-600 bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300"
-                      : "border-border hover:bg-muted/50"
+                    rankPreference === 'POPULARITY'
+                      ? 'border-green-600 bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300'
+                      : 'border-border hover:bg-muted/50'
                   }`}
                 >
                   <Star className="h-3.5 w-3.5" />
@@ -185,16 +203,9 @@ export function SettingsDialog() {
                   >
                     <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
                     <DialogClose asChild>
-                      <Link
-                        to={`/mosque/${mosque.placeId}`}
-                        className="min-w-0 flex-1 text-left"
-                      >
-                        <p className="truncate text-sm font-medium">
-                          {mosque.name}
-                        </p>
-                        <p className="truncate text-xs text-muted-foreground">
-                          {mosque.address}
-                        </p>
+                      <Link to={`/mosque/${mosque.placeId}`} className="min-w-0 flex-1 text-left">
+                        <p className="truncate text-sm font-medium">{mosque.name}</p>
+                        <p className="truncate text-xs text-muted-foreground">{mosque.address}</p>
                       </Link>
                     </DialogClose>
                     <Button

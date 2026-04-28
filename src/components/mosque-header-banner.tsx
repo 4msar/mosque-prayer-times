@@ -1,17 +1,10 @@
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import type { MosqueDetailsContentProps } from "@/types";
-import { useSettingsStore } from "@/store/settings-store";
-import dayjs from "@/lib/dayjs";
-import {
-    Bookmark,
-    ExternalLink,
-    MapPin,
-    Phone,
-    Star
-} from "lucide-react";
-import { Link } from "react-router-dom";
-
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import type { MosqueDetailsContentProps } from '@/types';
+import { useSettingsStore } from '@/store/settings-store';
+import dayjs from '@/lib/dayjs';
+import { Bookmark, ExternalLink, MapPin, Phone, Star } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export const MosqueHeaderBanner = ({
   mosqueDetails,
@@ -22,8 +15,7 @@ export const MosqueHeaderBanner = ({
 }) => {
   const { addBookmark, removeBookmark, isBookmarked } = useSettingsStore();
   const mosqueName = mosqueDetails.displayName ?? initialDetails.initialName;
-  const mosqueAddress =
-    mosqueDetails.formattedAddress ?? initialDetails.initialAddress;
+  const mosqueAddress = mosqueDetails.formattedAddress ?? initialDetails.initialAddress;
   const placeId = mosqueDetails.id;
   const bookmarked = isBookmarked(placeId);
 
@@ -33,12 +25,15 @@ export const MosqueHeaderBanner = ({
     } else {
       addBookmark({
         placeId,
-        name: mosqueName ?? "Unknown Mosque",
-        address: mosqueAddress ?? "",
+        name: mosqueName ?? 'Unknown Mosque',
+        address: mosqueAddress ?? '',
       });
     }
   };
-  const openNow = mosqueDetails.currentOpeningHours?.periods.some(period => period.open.day === dayjs().day()) ?? false;
+  const openNow =
+    mosqueDetails.currentOpeningHours?.periods.some(
+      (period) => period.open.day === dayjs().day()
+    ) ?? false;
   const rating = mosqueDetails.rating ?? undefined;
   const totalRatings = mosqueDetails.userRatingCount ?? undefined;
   const mapsUrl = mosqueDetails.googleMapsURI ?? undefined;
@@ -63,13 +58,11 @@ export const MosqueHeaderBanner = ({
             {openNow !== undefined && (
               <span
                 className={cn(
-                  "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
-                  openNow
-                    ? "bg-green-400/30 text-green-50"
-                    : "bg-red-400/30 text-red-100",
+                  'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
+                  openNow ? 'bg-green-400/30 text-green-50' : 'bg-red-400/30 text-red-100'
                 )}
               >
-                {openNow ? "● Open now" : "● Closed"}
+                {openNow ? '● Open now' : '● Closed'}
               </span>
             )}
             {rating !== undefined && (
@@ -77,9 +70,7 @@ export const MosqueHeaderBanner = ({
                 <Star className="h-3 w-3 fill-yellow-300 text-yellow-300" />
                 {rating.toFixed(1)}
                 {totalRatings && (
-                  <span className="text-white/70">
-                    ({totalRatings.toLocaleString()})
-                  </span>
+                  <span className="text-white/70">({totalRatings.toLocaleString()})</span>
                 )}
               </span>
             )}
@@ -90,13 +81,13 @@ export const MosqueHeaderBanner = ({
           <button
             type="button"
             onClick={handleBookmark}
-            aria-label={bookmarked ? "Remove bookmark" : "Add bookmark"}
+            aria-label={bookmarked ? 'Remove bookmark' : 'Add bookmark'}
             className="rounded-full p-1 transition-colors hover:bg-white/20"
           >
             <Bookmark
               className={cn(
-                "h-5 w-5 transition-colors",
-                bookmarked ? "fill-white text-white" : "text-white/60",
+                'h-5 w-5 transition-colors',
+                bookmarked ? 'fill-white text-white' : 'text-white/60'
               )}
             />
           </button>

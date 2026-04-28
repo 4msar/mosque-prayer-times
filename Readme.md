@@ -37,22 +37,22 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ## Environment Variables
 
-| Variable | Description |
-|---|---|
-| `VITE_FIREBASE_API_KEY` | Firebase API key |
-| `VITE_FIREBASE_AUTH_DOMAIN` | Firebase auth domain |
-| `VITE_FIREBASE_PROJECT_ID` | Firebase project ID |
-| `VITE_FIREBASE_STORAGE_BUCKET` | Firebase storage bucket |
+| Variable                            | Description                  |
+| ----------------------------------- | ---------------------------- |
+| `VITE_FIREBASE_API_KEY`             | Firebase API key             |
+| `VITE_FIREBASE_AUTH_DOMAIN`         | Firebase auth domain         |
+| `VITE_FIREBASE_PROJECT_ID`          | Firebase project ID          |
+| `VITE_FIREBASE_STORAGE_BUCKET`      | Firebase storage bucket      |
 | `VITE_FIREBASE_MESSAGING_SENDER_ID` | Firebase messaging sender ID |
-| `VITE_FIREBASE_APP_ID` | Firebase app ID |
-| `VITE_GOOGLE_MAPS_API_KEY` | Google Maps / Places API key |
+| `VITE_FIREBASE_APP_ID`              | Firebase app ID              |
+| `VITE_GOOGLE_MAPS_API_KEY`          | Google Maps / Places API key |
 
 ## Scripts
 
-| Command | Description |
-|---|---|
-| `yarn dev` | Start development server |
-| `yarn build` | Build for production |
+| Command        | Description                      |
+| -------------- | -------------------------------- |
+| `yarn dev`     | Start development server         |
+| `yarn build`   | Build for production             |
 | `yarn preview` | Preview production build locally |
 
 ## Firebase Firestore Structure

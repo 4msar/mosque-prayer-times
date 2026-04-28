@@ -1,26 +1,23 @@
-import { useMapsLibrary } from "@vis.gl/react-google-maps";
-import { useEffect, useRef, useState } from "react";
+import { useMapsLibrary } from '@vis.gl/react-google-maps';
+import { useEffect, useRef, useState } from 'react';
 
-const getMosqueDetails = async (
-  placesLib: google.maps.PlacesLibrary,
-  placeId: string,
-) => {
+const getMosqueDetails = async (placesLib: google.maps.PlacesLibrary, placeId: string) => {
   const service = new placesLib.Place({ id: placeId });
   const place = await service.fetchFields({
     fields: [
-      "displayName",
-      "formattedAddress",
-      "googleMapsURI",
-      "location",
-      "businessStatus",
-      "nationalPhoneNumber",
-      "photos",
-      "plusCode",
-      "primaryType",
-      "rating",
-      "types",
-      "currentOpeningHours",
-      "userRatingCount",
+      'displayName',
+      'formattedAddress',
+      'googleMapsURI',
+      'location',
+      'businessStatus',
+      'nationalPhoneNumber',
+      'photos',
+      'plusCode',
+      'primaryType',
+      'rating',
+      'types',
+      'currentOpeningHours',
+      'userRatingCount',
     ],
   });
 
@@ -28,7 +25,7 @@ const getMosqueDetails = async (
 };
 
 export const useMosqueDetails = (placeId: string | null) => {
-  const placesLib = useMapsLibrary("places");
+  const placesLib = useMapsLibrary('places');
 
   const [data, setData] = useState<google.maps.places.Place | null>(null);
   const [loading, setLoading] = useState(true);

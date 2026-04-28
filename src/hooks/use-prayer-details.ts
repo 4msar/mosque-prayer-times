@@ -14,8 +14,6 @@ const getPrayerDetails = async (placeId: string) => {
 export const usePrayerDetails = (placeId: string) => {
     const [data, setData] = useState<PrayerDetails | null>(null);
     const [loading, setLoading] = useState(true);
-    
-    console.log({placeId, data});
 
     useEffect(() => {
         if (!placeId) return;

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import { Toaster } from "@/components/ui/sonner";
 import HomePage from "@/pages/HomePage";
@@ -12,6 +12,7 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/mosque/:placeId" element={<MosqueDetailsPage />} />
+                    <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
             </BrowserRouter>
             <Toaster richColors position="top-center" />

@@ -3,32 +3,28 @@ import { type PrayerDetails } from "@/types";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
+const getPrayerDetails = async (placeId: string) => {
+    const docSnap = await getDoc(doc(db, "mosques", placeId));
+    if (docSnap.exists()) {
+        return docSnap.data() as PrayerDetails;
+    }
+    return null;
+}
+
 export const usePrayerDetails = (placeId: string) => {
     const [data, setData] = useState<PrayerDetails | null>(null);
+    const [loading, setLoading] = useState(true);
+    
+    console.log({placeId, data});
 
     useEffect(() => {
         if (!placeId) return;
 
-        let cancelled = false;
-
-        const load = async () => {
-            try {
-                const docSnap = await getDoc(doc(db, "mosques", placeId));
-
-                if (!cancelled && docSnap.exists()) {
-                    setData(docSnap.data() as PrayerDetails);
-                }
-            } catch (err) {
-                console.error("Error loading mosque:", err);
-            }
-        };
-
-        void load();
-
-        return () => {
-            cancelled = true;
-        };
+        getPrayerDetails(placeId).then((data) => {
+            setData(data);
+            setLoading(false);
+        });
     }, [placeId]);
 
-    return data;
+    return { data, loading };
 }

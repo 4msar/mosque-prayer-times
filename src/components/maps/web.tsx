@@ -93,7 +93,7 @@ export const WebMaps = () => {
 
     if (!isOnline) {
         return (
-            <div className="flex h-full w-full flex-col items-center justify-center gap-4 bg-muted/40 text-muted-foreground">
+            <div className="flex flex-1 h-full w-full flex-col items-center justify-center gap-4 bg-muted/40 text-muted-foreground">
                 <WifiOff className="h-12 w-12 opacity-50" />
                 <div className="text-center">
                     <p className="text-lg font-semibold">You are offline</p>
@@ -105,7 +105,7 @@ export const WebMaps = () => {
     }
 
     return (
-        <div className="relative h-full w-full">
+        <>
             <Map
                 defaultCenter={{
                     lat: defaultLocation.latitude,
@@ -115,7 +115,7 @@ export const WebMaps = () => {
                 onClick={handleMapClick}
                 mapId={"8883d749fdf0e73d"}
                 colorScheme={darkMode ? "DARK" : "LIGHT"}
-                className="h-full w-full"
+                className="flex-1 h-full w-full"
             >
                 {currentLocation && (
                     <AdvancedMarker position={center}>
@@ -154,6 +154,6 @@ export const WebMaps = () => {
                     initialLongitude={selectedMosque.longitude}
                 />
             )}
-        </div>
+        </>
     );
 };

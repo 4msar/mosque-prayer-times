@@ -2,99 +2,114 @@ import { Button } from "@/components/ui/button";
 import { useMosqueDetails } from "@/hooks/use-mosque-details";
 import { usePrayerDetails } from "@/hooks/use-prayer-details";
 import { defaultPrayerTimes } from "@/services/helpers";
+import type { MosqueDetailsContentProps } from "@/types";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import {
-    Clock,
-    Loader2,
-    Pencil
-} from "lucide-react";
+import { Timestamp } from "firebase/firestore";
+import { Clock, Pencil } from "lucide-react";
 import { useState } from "react";
 import { MosqueHeaderBanner } from "./mosque-header-banner";
 import { PrayerTimesDisplay } from "./prayer-times-display";
 import { PrayerTimesForm } from "./prayer-times-form";
-import type { MosqueDetailsContentProps } from "@/types";
-import { Timestamp } from "firebase/firestore";
+import { Skeleton } from "./ui/skeleton";
 
 dayjs.extend(customParseFormat);
 
-
 export function MosqueDetailsContent({
-    placeId,
-    ...initialDetails
+  placeId,
+  ...initialDetails
 }: MosqueDetailsContentProps) {
-    const mosqueDetails = useMosqueDetails(placeId);
-    const prayerDetails = usePrayerDetails(placeId);
-    const prayerTimes = prayerDetails?.prayerTimes ?? defaultPrayerTimes;
+  const { data: mosqueDetails, loading: mosqueDetailsLoading } =
+    useMosqueDetails(placeId);
+  const { data: prayerDetails, loading: prayerDetailsLoading } =
+    usePrayerDetails(placeId);
+  const prayerTimes = prayerDetails?.prayerTimes ?? defaultPrayerTimes;
+  const [isEditing, setIsEditing] = useState(false);
 
-    const [isEditing, setIsEditing] = useState(false);
-
-    if (!mosqueDetails) {
-        return (
-            <div className="flex min-h-[260px] items-center justify-center">
-                <div className="flex flex-col items-center gap-3 text-muted-foreground">
-                    <Loader2 className="h-8 w-8 animate-spin text-green-600" />
-                    <p className="text-sm">Loading mosque details…</p>
-                </div>
-            </div>
-        );
+  const getDate = (date: Timestamp | null) => {
+    if (date) {
+      return dayjs(date.seconds * 1000);
     }
+    return dayjs(prayerTimes.lastUpdated);
+  };
 
-    const getDate = (date: Timestamp | null) => {
-        if (date) {
-            return dayjs(date.seconds * 1000);
-        }
-        return dayjs(prayerTimes.lastUpdated);
-    }
-
+  if (mosqueDetailsLoading || prayerDetailsLoading) {
     return (
-        <div className="flex flex-col">
-            {/* Mosque header banner */}
-            <MosqueHeaderBanner mosqueDetails={mosqueDetails} initialDetails={initialDetails} />
-
-            {/* Prayer times section */}
-            <div className="mt-4">
-                <div className="mb-3 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-green-600" />
-                        <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">Prayer Times</h3>
-                        {prayerDetails?.lastUpdated && (
-                            <span className="text-[10px] text-muted-foreground">
-                                · Updated {getDate(prayerDetails.lastUpdated).format("D MMM YYYY, hh:mm A")}
-                            </span>
-                        )}
-                    </div>
-                    {prayerTimes && !isEditing && (
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-7 gap-1.5 px-2 text-xs text-green-700 hover:text-green-800"
-                            onClick={() => setIsEditing(true)}
-                        >
-                            <Pencil className="h-3 w-3" />
-                            Edit
-                        </Button>
-                    )}
-                </div>
-
-                {prayerDetails && !isEditing && (
-                    <PrayerTimesDisplay prayerTimes={prayerTimes} />
-                )}
-                {mosqueDetails && isEditing && (
-                    <PrayerTimesForm mosqueDetails={mosqueDetails} placeId={placeId} prayerTimes={prayerTimes} onCancel={() => setIsEditing(false)} />
-                )}
-                {(!mosqueDetails || !prayerDetails) && !isEditing && (
-                    <div className="flex min-h-[260px] items-center justify-center">
-                        <p className="text-sm text-muted-foreground">No prayer times available</p>
-                    </div>
-                )}
-                
-                {isEditing && !mosqueDetails && (
-                    <div className="flex min-h-[260px] items-center justify-center">
-                        <p className="text-sm text-muted-foreground">No mosque details available</p>
-                    </div>
-                )}
-            </div>
-        </div>
+      <div className="flex flex-col gap-4 min-h-[260px] items-center justify-center">
+        {/* Skeleton */}
+        <Skeleton className="h-42 w-full rounded-md mb-4" />
+        <Skeleton className="h-full flex-1 min-h-64 w-full rounded-md" />
+      </div>
     );
+  }
+
+  return (
+    <div className="flex flex-col">
+      {/* Mosque header banner */}
+      {mosqueDetails && (
+        <MosqueHeaderBanner
+          mosqueDetails={mosqueDetails}
+          initialDetails={initialDetails}
+        />
+      )}
+
+      {/* Prayer times section */}
+      <div className="mt-4">
+        <div className="mb-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Clock className="h-4 w-4 text-green-600" />
+            <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+              Prayer Times
+            </h3>
+            {prayerDetails?.lastUpdated && (
+              <span className="text-[10px] text-muted-foreground">
+                · Updated{" "}
+                {getDate(prayerDetails.lastUpdated).format(
+                  "D MMM YYYY, hh:mm A",
+                )}
+              </span>
+            )}
+          </div>
+          {prayerTimes && !isEditing && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 gap-1.5 px-2 text-xs text-green-700 hover:text-green-800"
+              onClick={() => setIsEditing(true)}
+            >
+              <Pencil className="h-3 w-3" />
+              Edit
+            </Button>
+          )}
+        </div>
+
+        {prayerDetails && !isEditing && (
+          <PrayerTimesDisplay prayerTimes={prayerTimes} />
+        )}
+        {mosqueDetails && isEditing && (
+          <PrayerTimesForm
+            mosqueDetails={mosqueDetails}
+            placeId={placeId}
+            prayerTimes={prayerTimes}
+            onCancel={() => setIsEditing(false)}
+          />
+        )}
+        {(!mosqueDetails || !prayerDetails) && !isEditing && (
+          <div className="flex min-h-[260px] items-center justify-center">
+            <p className="text-sm text-muted-foreground">
+              No prayer times available
+            </p>
+          </div>
+        )}
+
+        {isEditing && !mosqueDetails && (
+          <div className="flex min-h-[260px] items-center justify-center">
+            <p className="text-sm text-muted-foreground">
+              No mosque details available
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }

@@ -1,36 +1,52 @@
-import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
-import { useEffect, useState } from "react";
+import { useMapsLibrary } from "@vis.gl/react-google-maps";
+import { useEffect, useRef, useState } from "react";
+
+const getMosqueDetails = async (
+  placesLib: google.maps.PlacesLibrary,
+  placeId: string,
+) => {
+  const service = new placesLib.Place({ id: placeId });
+  const place = await service.fetchFields({
+    fields: [
+      "displayName",
+      "formattedAddress",
+      "googleMapsURI",
+      "location",
+      "businessStatus",
+      "nationalPhoneNumber",
+      "photos",
+      "plusCode",
+      "primaryType",
+      "rating",
+      "types",
+      "currentOpeningHours",
+      "userRatingCount",
+    ],
+  });
+
+  return place.place;
+};
 
 export const useMosqueDetails = (placeId: string | null) => {
-    const placesLib = useMapsLibrary("places");
-    useMapsLibrary("maps");
-    const map = useMap();
+  const placesLib = useMapsLibrary("places");
 
-    const [result, setResult] = useState<google.maps.places.Place | null>(null);
+  const [data, setData] = useState<google.maps.places.Place | null>(null);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        if (!map || !placesLib || !placeId) return;
+  const prevPlaceId = useRef<string | undefined>(undefined);
 
-        let cancelled = false;
+  useEffect(() => {
+    if (!placesLib || !placeId) return;
+    if (prevPlaceId.current === placeId) return;
 
-        const load = async () => {
-            const service = new placesLib.Place({ id: placeId });
-            const place = await service.fetchFields({
-                fields: [
-                    "displayName", "formattedAddress", "googleMapsURI", "location",
-                    "businessStatus", "nationalPhoneNumber", "photos", "plusCode",
-                    "primaryType", "rating", "types", "currentOpeningHours", "userRatingCount",
-                ],
-            });
-            if (!cancelled) setResult(place.place);
-        };
+    prevPlaceId.current = placeId;
+    setLoading(true);
 
-        void load();
+    getMosqueDetails(placesLib, placeId).then((data) => {
+      setData(data);
+      setLoading(false);
+    });
+  }, [placesLib, placeId]);
 
-        return () => {
-            cancelled = true;
-        };
-    }, [map, placesLib, placeId]);
-
-    return result;
+  return { data, loading };
 };

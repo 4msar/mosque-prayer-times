@@ -37,7 +37,7 @@ export const useGetNearByPlaces = (location: Location | null, radius = 500) => {
             // optional parameters
             includedPrimaryTypes: ["mosque"],
             maxResultCount: 20,
-            rankPreference: placesLib.SearchNearbyRankPreference.POPULARITY,
+            rankPreference: placesLib.SearchNearbyRankPreference.DISTANCE,
             language: "en-US",
         };
 

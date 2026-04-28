@@ -1,13 +1,13 @@
 import { WebMaps } from "@/components/maps/web";
 import { Header } from "@/components/layouts";
+import { useMapsLibrary } from "@vis.gl/react-google-maps";
 
 export default function HomePage() {
+    useMapsLibrary("maps");
     return (
-        <div className="flex h-full flex-col">
+        <div className="flex h-dvh min-h-dvh flex-col">
             <Header />
-            <main className="relative flex-1 overflow-hidden">
-                <WebMaps />
-            </main>
+            <WebMaps />
         </div>
     );
 }

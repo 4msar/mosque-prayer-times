@@ -7,11 +7,15 @@ export interface BookmarkedMosque {
     address: string;
 }
 
+export type RankPreference = "DISTANCE" | "POPULARITY";
+
 interface SettingsState {
     radius: number;
+    rankPreference: RankPreference;
     darkMode: boolean;
     bookmarks: BookmarkedMosque[];
     setRadius: (radius: number) => void;
+    setRankPreference: (pref: RankPreference) => void;
     setDarkMode: (dark: boolean) => void;
     addBookmark: (mosque: BookmarkedMosque) => void;
     removeBookmark: (placeId: string) => void;
@@ -22,10 +26,13 @@ export const useSettingsStore = create<SettingsState>()(
     persist(
         (set, get) => ({
             radius: 500,
+            rankPreference: "DISTANCE" as RankPreference,
             darkMode: false,
             bookmarks: [],
 
             setRadius: (radius) => set({ radius }),
+
+            setRankPreference: (rankPreference) => set({ rankPreference }),
 
             setDarkMode: (darkMode) => {
                 set({ darkMode });

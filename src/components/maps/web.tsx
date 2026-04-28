@@ -38,7 +38,7 @@ export const WebMaps = () => {
     const isOnline = useOnlineStatus();
 
     const currentLocation = useGetLocation();
-    const { radius, darkMode } = useSettingsStore();
+    const { radius, rankPreference, darkMode } = useSettingsStore();
 
     const center = useMemo(() => {
         if (!currentLocation || !mapLib)
@@ -53,7 +53,7 @@ export const WebMaps = () => {
         );
     }, [currentLocation, mapLib]);
 
-    const mosques = useGetNearByPlaces(currentLocation ?? null, radius);
+    const mosques = useGetNearByPlaces(currentLocation ?? null, radius, rankPreference);
 
     const handleMapClick = (event: MapMouseEvent) => {
         if (!event.detail.latLng) return;

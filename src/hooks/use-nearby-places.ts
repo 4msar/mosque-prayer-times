@@ -1,8 +1,13 @@
 import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
 import { useCallback, useEffect, useState } from "react";
+import { type RankPreference } from "@/store/settings-store";
 import { type Location } from "./use-location";
 
-export const useGetNearByPlaces = (location: Location | null, radius = 500) => {
+export const useGetNearByPlaces = (
+    location: Location | null,
+    radius = 500,
+    rankPreference: RankPreference = "DISTANCE",
+) => {
     const placesLib = useMapsLibrary("places");
     useMapsLibrary("maps");
     const map = useMap();
@@ -13,7 +18,6 @@ export const useGetNearByPlaces = (location: Location | null, radius = 500) => {
         if (!map || !placesLib || !location) return;
 
         const request = {
-            // required parameters
             fields: [
                 "displayName",
                 "formattedAddress",
@@ -34,10 +38,12 @@ export const useGetNearByPlaces = (location: Location | null, radius = 500) => {
                 ),
                 radius,
             },
-            // optional parameters
             includedPrimaryTypes: ["mosque"],
             maxResultCount: 20,
-            rankPreference: placesLib.SearchNearbyRankPreference.DISTANCE,
+            rankPreference:
+                rankPreference === "POPULARITY"
+                    ? placesLib.SearchNearbyRankPreference.POPULARITY
+                    : placesLib.SearchNearbyRankPreference.DISTANCE,
             language: "en-US",
         };
 
@@ -50,7 +56,7 @@ export const useGetNearByPlaces = (location: Location | null, radius = 500) => {
                 ),
             );
         });
-    }, [map, placesLib, location, radius]);
+    }, [map, placesLib, location, radius, rankPreference]);
 
     useEffect(() => {
         findMosques();

@@ -12,7 +12,7 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSettingsStore } from "@/store/settings-store";
-import { Bookmark, MapPin, Settings2, Trash2 } from "lucide-react";
+import { Bookmark, MapPin, Settings2, Trash2, ArrowUpDown, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const RADIUS_OPTIONS = [500, 1000, 2000, 3000, 5000];
@@ -21,6 +21,8 @@ export function SettingsDialog() {
   const {
     radius,
     setRadius,
+    rankPreference,
+    setRankPreference,
     darkMode,
     setDarkMode,
     bookmarks,
@@ -122,6 +124,44 @@ export function SettingsDialog() {
                     {r >= 1000 ? `${r / 1000}km` : `${r}m`}
                   </button>
                 ))}
+              </div>
+            </div>
+
+            <div className="border-t" />
+
+            {/* Sort Order */}
+            <div className="space-y-3">
+              <div>
+                <Label className="text-sm font-medium">Sort Results By</Label>
+                <p className="text-xs text-muted-foreground">
+                  How nearby mosques are ranked
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setRankPreference("DISTANCE")}
+                  className={`flex items-center justify-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium transition-colors ${
+                    rankPreference === "DISTANCE"
+                      ? "border-green-600 bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300"
+                      : "border-border hover:bg-muted/50"
+                  }`}
+                >
+                  <ArrowUpDown className="h-3.5 w-3.5" />
+                  Distance
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRankPreference("POPULARITY")}
+                  className={`flex items-center justify-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium transition-colors ${
+                    rankPreference === "POPULARITY"
+                      ? "border-green-600 bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300"
+                      : "border-border hover:bg-muted/50"
+                  }`}
+                >
+                  <Star className="h-3.5 w-3.5" />
+                  Popularity
+                </button>
               </div>
             </div>
           </TabsContent>

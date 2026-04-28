@@ -1,9 +1,9 @@
 import { db } from '@/services/firebaseConfig';
 import { type PrayerDetails } from '@/types';
 import { doc, getDoc } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 
-const getPrayerDetails = async (placeId: string) => {
+const fetcher = async (placeId: string): Promise<PrayerDetails | null> => {
   const docSnap = await getDoc(doc(db, 'mosques', placeId));
   if (docSnap.exists()) {
     return docSnap.data() as PrayerDetails;
@@ -11,18 +11,18 @@ const getPrayerDetails = async (placeId: string) => {
   return null;
 };
 
-export const usePrayerDetails = (placeId: string): { data: PrayerDetails | null, loading: boolean } => {
-  const [data, setData] = useState<PrayerDetails | null>(null);
-  const [loading, setLoading] = useState(true);
+export const PRAYER_DETAILS_KEY = (placeId: string) => ['prayer-details', placeId] as const;
 
-  useEffect(() => {
-    if (!placeId) return;
+export const usePrayerDetails = (placeId: string) => {
+  const { data, isLoading, mutate } = useSWR(
+    placeId ? PRAYER_DETAILS_KEY(placeId) : null,
+    ([, id]) => fetcher(id),
+    { revalidateOnFocus: false }
+  );
 
-    getPrayerDetails(placeId).then((data) => {
-      setData(data);
-      setLoading(false);
-    });
-  }, [placeId]);
-
-  return { data, loading };
+  return {
+    data: data ?? null,
+    isLoading,
+    mutate,
+  };
 };

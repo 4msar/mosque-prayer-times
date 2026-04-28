@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import {
   AdvancedMarker,
   Map,
@@ -6,7 +7,7 @@ import {
   useMap,
   useMapsLibrary,
 } from '@vis.gl/react-google-maps';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useGetLocation, type Location } from '@/hooks/use-location';
 import { useGetNearByPlaces } from '@/hooks/use-nearby-places';
 import { useOnlineStatus } from '@/hooks/use-online-status';
@@ -85,16 +86,24 @@ export const WebMaps = () => {
     setOverlayOpen(true);
   };
 
-  const handleLocateMe = () => {
+  const handleLocateMe = useCallback(() => {
     if (!geoLocation) return;
 
     setCurrentLocation(geoLocation);
+
+    setLocationFromMap(false);
 
     map?.setCenter({
       lat: geoLocation.latitude,
       lng: geoLocation.longitude,
     });
-  };
+  }, [geoLocation, map, setLocationFromMap]);
+
+  useEffect(() => {
+    if (geoLocation) {
+      setCurrentLocation(geoLocation);
+    }
+  }, [geoLocation]);
 
   useEffect(() => {
     if (currentLocation) {
@@ -103,7 +112,7 @@ export const WebMaps = () => {
         lng: currentLocation.longitude,
       });
     }
-  }, [currentLocation, map]);
+  }, [currentLocation, geoLocation, map]);
 
   if (!isOnline) {
     return (

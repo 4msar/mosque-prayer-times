@@ -17,12 +17,14 @@ export const PrayerTimesForm = ({
   prayerTimes,
   existsPrayerTimes,
   onCancel,
+  onSaved,
 }: {
   mosqueDetails: google.maps.places.Place;
   placeId: string;
   prayerTimes: PrayerTimes;
   existsPrayerTimes: boolean;
   onCancel: () => void;
+  onSaved?: (updated: { prayerTimes: PrayerTimes; lastUpdated: Date }) => void;
 }) => {
   const [formData, setFormData] = useState<PrayerTimes>(prayerTimes);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -43,6 +45,7 @@ export const PrayerTimesForm = ({
     }
     try {
       setSaving(true);
+      const lastUpdated = new Date();
       const docRef = doc(db, 'mosques', placeId);
       await setDoc(docRef, {
         name: mosqueDetails.displayName,
@@ -50,11 +53,11 @@ export const PrayerTimesForm = ({
         latitude: mosqueDetails.location?.lat() ?? 0,
         longitude: mosqueDetails.location?.lng() ?? 0,
         prayerTimes: formData,
-        lastUpdated: new Date(),
+        lastUpdated,
       });
       toast.success('Prayer times saved successfully.');
-      setFormData(prayerTimes);
       setValidationError(null);
+      onSaved?.({ prayerTimes: formData, lastUpdated });
     } catch (err) {
       console.error('Error saving:', err);
       toast.error('Failed to save prayer times.');

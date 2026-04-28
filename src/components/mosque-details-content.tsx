@@ -14,9 +14,26 @@ import { Skeleton } from './ui/skeleton';
 
 export function MosqueDetailsContent({ placeId, ...initialDetails }: MosqueDetailsContentProps) {
   const { data: mosqueDetails, loading: mosqueDetailsLoading } = useMosqueDetails(placeId);
-  const { data: prayerDetails, loading: prayerDetailsLoading } = usePrayerDetails(placeId);
+  const { data: prayerDetails, isLoading: prayerDetailsLoading, mutate } = usePrayerDetails(placeId);
   const prayerTimes = prayerDetails?.prayerTimes ?? defaultPrayerTimes;
   const [isEditing, setIsEditing] = useState(false);
+
+  const handleSaved = ({ prayerTimes: updatedTimes, lastUpdated }: { prayerTimes: typeof prayerTimes; lastUpdated: Date }) => {
+    mutate(
+      (current) => ({
+        ...(current ?? {
+          name: mosqueDetails?.displayName ?? '',
+          address: mosqueDetails?.formattedAddress ?? '',
+          latitude: mosqueDetails?.location?.lat() ?? 0,
+          longitude: mosqueDetails?.location?.lng() ?? 0,
+        }),
+        prayerTimes: updatedTimes,
+        lastUpdated: Timestamp.fromDate(lastUpdated),
+      }),
+      { revalidate: false }
+    );
+    setIsEditing(false);
+  };
 
   const getDate = (date: Timestamp | null) => {
     if (date) {
@@ -79,6 +96,7 @@ export function MosqueDetailsContent({ placeId, ...initialDetails }: MosqueDetai
               prayerTimes={prayerTimes}
               existsPrayerTimes={false}
               onCancel={() => setIsEditing(false)}
+              onSaved={handleSaved}
             />
           </>
         )}
@@ -91,6 +109,7 @@ export function MosqueDetailsContent({ placeId, ...initialDetails }: MosqueDetai
             placeId={placeId}
             prayerTimes={prayerTimes}
             onCancel={() => setIsEditing(false)}
+            onSaved={handleSaved}
           />
         )}
 

@@ -27,7 +27,7 @@ export default function MosqueDetailsPage() {
 
   return (
     <div className="flex min-h-dvh flex-col bg-slate-50 dark:bg-gray-950">
-      <header className="flex items-center gap-3 border-b border-gray-200 bg-white px-4 py-3 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <header className="flex items-center sticky top-0 z-10 gap-3 border-b border-gray-200 bg-white px-4 py-3 shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="shrink-0">
           <ArrowLeft className="h-5 w-5" />
         </Button>

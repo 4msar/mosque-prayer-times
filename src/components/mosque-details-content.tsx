@@ -51,7 +51,7 @@ export function MosqueDetailsContent({ placeId, ...initialDetails }: MosqueDetai
               Prayer Times
             </h3>
           </div>
-          {prayerTimes && !isEditing && (
+          {prayerDetails && !isEditing && (
             <Button
               variant="ghost"
               size="sm"
@@ -64,24 +64,40 @@ export function MosqueDetailsContent({ placeId, ...initialDetails }: MosqueDetai
           )}
         </div>
 
+        {/* Has prayer times and not editing — show display */}
         {prayerDetails && !isEditing && <PrayerTimesDisplay prayerTimes={prayerTimes} />}
+
+        {/* Has mosque details but no prayer times — show message + form to add */}
+        {mosqueDetails && !prayerDetails && !isEditing && (
+          <>
+            <p className="text-sm text-center mb-4 border p-4 rounded-lg text-yellow-700 bg-yellow-50">
+              No prayer times available. Please add prayer times below.
+            </p>
+            <PrayerTimesForm
+              mosqueDetails={mosqueDetails}
+              placeId={placeId}
+              prayerTimes={prayerTimes}
+              existsPrayerTimes={false}
+              onCancel={() => setIsEditing(false)}
+            />
+          </>
+        )}
+
+        {/* Editing existing prayer times */}
         {mosqueDetails && isEditing && (
           <PrayerTimesForm
             mosqueDetails={mosqueDetails}
+            existsPrayerTimes={true}
             placeId={placeId}
             prayerTimes={prayerTimes}
             onCancel={() => setIsEditing(false)}
           />
         )}
-        {(!mosqueDetails || !prayerDetails) && !isEditing && (
+
+        {/* No mosque details at all */}
+        {!mosqueDetails && !prayerDetails && (
           <div className="flex min-h-[260px] items-center justify-center">
             <p className="text-sm text-muted-foreground">No prayer times available</p>
-          </div>
-        )}
-
-        {isEditing && !mosqueDetails && (
-          <div className="flex min-h-[260px] items-center justify-center">
-            <p className="text-sm text-muted-foreground">No mosque details available</p>
           </div>
         )}
 

@@ -2,7 +2,7 @@ import { SettingsDialog } from '@/components/settings-dialog';
 
 export const Header = () => {
   return (
-    <header className="flex items-center gap-2 border-b border-gray-200 bg-white px-4 py-3 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+    <header className="flex sticky top-0 z-10 items-center gap-2 border-b border-gray-200 bg-white px-4 py-3 shadow-sm dark:border-gray-800 dark:bg-gray-950">
       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-600">
         <img src="/icons/icon-512x512.png" alt="logo" className="h-8 w-8" />
       </div>

@@ -15,11 +15,13 @@ export const PrayerTimesForm = ({
   mosqueDetails,
   placeId,
   prayerTimes,
+  existsPrayerTimes,
   onCancel,
 }: {
   mosqueDetails: google.maps.places.Place;
   placeId: string;
   prayerTimes: PrayerTimes;
+  existsPrayerTimes: boolean;
   onCancel: () => void;
 }) => {
   const [formData, setFormData] = useState<PrayerTimes>(prayerTimes);
@@ -70,7 +72,7 @@ export const PrayerTimesForm = ({
   return (
     <div className="rounded-xl border border-dashed border-green-200 bg-green-50/40 p-4 dark:border-green-800 dark:bg-green-950/20">
       <p className="mb-3 text-xs font-medium text-gray-600 dark:text-gray-400">
-        {prayerTimes.lastUpdated
+        {existsPrayerTimes
           ? 'Update prayer times'
           : 'No prayer times yet — add them for this mosque'}
       </p>
@@ -119,10 +121,12 @@ export const PrayerTimesForm = ({
           )}
           Save Times
         </Button>
-        <Button variant="outline" size="sm" onClick={handleCancel} className="gap-2">
-          <X className="h-3.5 w-3.5" />
-          Cancel
-        </Button>
+        {existsPrayerTimes && (
+          <Button variant="outline" size="sm" onClick={handleCancel} className="gap-2">
+            <X className="h-3.5 w-3.5" />
+            Cancel
+          </Button>
+        )}
       </div>
     </div>
   );

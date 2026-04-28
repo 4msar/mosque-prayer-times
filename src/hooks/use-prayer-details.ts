@@ -11,7 +11,7 @@ const getPrayerDetails = async (placeId: string) => {
   return null;
 };
 
-export const usePrayerDetails = (placeId: string) => {
+export const usePrayerDetails = (placeId: string): { data: PrayerDetails | null, loading: boolean } => {
   const [data, setData] = useState<PrayerDetails | null>(null);
   const [loading, setLoading] = useState(true);
 

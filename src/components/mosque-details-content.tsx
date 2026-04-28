@@ -53,19 +53,11 @@ export function MosqueDetailsContent({
       {/* Prayer times section */}
       <div className="mt-4">
         <div className="mb-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-green-600" />
-            <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+            <h3 className="text-sm font-semibold flex items-center gap-2 text-gray-800 dark:text-gray-200">
+              <Clock className="h-4 w-4 text-green-600" />
               Prayer Times
             </h3>
-            {prayerDetails?.lastUpdated && (
-              <span className="text-[10px] text-muted-foreground">
-                · Updated{" "}
-                {getDate(prayerDetails.lastUpdated).format(
-                  "D MMM YYYY, hh:mm A",
-                )}
-              </span>
-            )}
           </div>
           {prayerTimes && !isEditing && (
             <Button
@@ -106,6 +98,15 @@ export function MosqueDetailsContent({
             </p>
           </div>
         )}
+
+        <p className="text-center text-xs text-muted-foreground mt-4">
+          {prayerDetails?.lastUpdated && (
+            <span className="text-xs text-muted-foreground">
+              Last Updated:{" "}
+              {getDate(prayerDetails.lastUpdated).format("D MMM YYYY, hh:mm A")}
+            </span>
+          )}
+        </p>
       </div>
     </div>
   );

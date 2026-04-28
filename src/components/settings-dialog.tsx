@@ -15,7 +15,7 @@ import { useSettingsStore } from "@/store/settings-store";
 import { Bookmark, MapPin, Settings2, Trash2, ArrowUpDown, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const RADIUS_OPTIONS = [500, 1000, 2000, 3000, 5000];
+const RADIUS_OPTIONS = [100, 500, 1000, 2000];
 
 export function SettingsDialog() {
   const {
@@ -103,9 +103,9 @@ export function SettingsDialog() {
               </div>
 
               <Slider
-                min={500}
-                max={5000}
-                step={500}
+                min={100}
+                max={2000}
+                step={100}
                 value={[radius]}
                 onValueChange={([v]) => setRadius(v)}
                 className="w-full"

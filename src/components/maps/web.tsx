@@ -151,7 +151,7 @@ export const WebMaps = () => {
         ))}
 
         {chooseLocationFromMap && (
-          <div className="fixed bottom-20 left-0 right-0 p-4 bg-black/50 backdrop-blur-sm rounded-lg w-120 mx-auto text-center text-white">
+          <div className="fixed bottom-20 left-0 right-0 p-4 bg-black/50 backdrop-blur-sm rounded-lg w-[60dvw] md:w-80 mx-auto text-center text-white">
             <span>Click on the map to choose a location</span>
           </div>
         )}

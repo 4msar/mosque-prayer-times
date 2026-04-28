@@ -7,10 +7,11 @@ import {
     useMapsLibrary,
 } from "@vis.gl/react-google-maps";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useGetLocation } from "@/hooks/use-location";
 import { useGetNearByPlaces } from "@/hooks/use-nearby-places";
 import { FloatingButton } from "@/components/floating-button";
+import { MosqueDetailsOverlay } from "@/components/mosque-details-overlay";
+
 const markerImage = "/marker.png";
 
 export const defaultLocation = {
@@ -18,11 +19,19 @@ export const defaultLocation = {
     longitude: 90.3751423,
 };
 
+interface SelectedMosque {
+    placeId: string;
+    name?: string;
+    address?: string;
+    latitude?: number;
+    longitude?: number;
+}
+
 export const WebMaps = () => {
     const mapLib = useMapsLibrary("maps");
     const map = useMap();
-    const navigate = useNavigate();
-    const [_placeId, setPlaceId] = useState<string | null>(null);
+    const [selectedMosque, setSelectedMosque] = useState<SelectedMosque | null>(null);
+    const [overlayOpen, setOverlayOpen] = useState(false);
 
     const currentLocation = useGetLocation();
 
@@ -43,21 +52,21 @@ export const WebMaps = () => {
 
     const handleMapClick = (event: MapMouseEvent) => {
         if (!event.detail.latLng) return;
-
-        if (event.detail.placeId) {
-            setPlaceId(event.detail.placeId);
+        // Close overlay when clicking map background
+        if (!event.detail.placeId) {
+            setOverlayOpen(false);
         }
     };
 
     const handleMosqueClick = (mosque: google.maps.places.Place) => {
-        navigate(`/mosque/${mosque.id}`, {
-            state: {
-                name: mosque.displayName,
-                address: mosque.formattedAddress,
-                latitude: mosque.location?.lat(),
-                longitude: mosque.location?.lng(),
-            },
+        setSelectedMosque({
+            placeId: mosque.id,
+            name: mosque.displayName ?? undefined,
+            address: mosque.formattedAddress ?? undefined,
+            latitude: mosque.location?.lat(),
+            longitude: mosque.location?.lng(),
         });
+        setOverlayOpen(true);
     };
 
     const handleLocateMe = () => {
@@ -112,7 +121,20 @@ export const WebMaps = () => {
                     </AdvancedMarker>
                 ))}
             </Map>
+
             <FloatingButton onClick={handleLocateMe} />
+
+            {selectedMosque && (
+                <MosqueDetailsOverlay
+                    open={overlayOpen}
+                    onOpenChange={setOverlayOpen}
+                    placeId={selectedMosque.placeId}
+                    initialName={selectedMosque.name}
+                    initialAddress={selectedMosque.address}
+                    initialLatitude={selectedMosque.latitude}
+                    initialLongitude={selectedMosque.longitude}
+                />
+            )}
         </div>
     );
 };

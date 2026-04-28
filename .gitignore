@@ -12,6 +12,11 @@ dist/
 .DS_Store
 *.pem
 
+# lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
 # debug logs
 npm-debug.*
 yarn-debug.*

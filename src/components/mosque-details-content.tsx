@@ -14,6 +14,7 @@ import { MosqueHeaderBanner } from "./mosque-header-banner";
 import { PrayerTimesDisplay } from "./prayer-times-display";
 import { PrayerTimesForm } from "./prayer-times-form";
 import { MosqueDetailsContentProps } from "@/types";
+import { Timestamp } from "firebase/firestore";
 
 dayjs.extend(customParseFormat);
 
@@ -25,7 +26,6 @@ export function MosqueDetailsContent({
     const mosqueDetails = useMosqueDetails(placeId);
     const prayerDetails = usePrayerDetails(placeId);
     const prayerTimes = prayerDetails?.prayerTimes ?? defaultPrayerTimes;
-
 
     const [isEditing, setIsEditing] = useState(false);
 
@@ -40,6 +40,13 @@ export function MosqueDetailsContent({
         );
     }
 
+    const getDate = (date: Timestamp | null) => {
+        if (date) {
+            return dayjs(date.seconds * 1000);
+        }
+        return dayjs(prayerTimes.lastUpdated);
+    }
+
     return (
         <div className="flex flex-col">
             {/* Mosque header banner */}
@@ -51,9 +58,9 @@ export function MosqueDetailsContent({
                     <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4 text-green-600" />
                         <h3 className="text-sm font-semibold text-gray-800">Prayer Times</h3>
-                        {prayerTimes.lastUpdated && (
+                        {prayerDetails?.lastUpdated && (
                             <span className="text-[10px] text-muted-foreground">
-                                · Updated {prayerTimes.lastUpdated}
+                                · Updated {getDate(prayerDetails.lastUpdated).format("D MMM YYYY, hh:mm A")}
                             </span>
                         )}
                     </div>
@@ -70,10 +77,22 @@ export function MosqueDetailsContent({
                     )}
                 </div>
 
-                {prayerTimes.lastUpdated && !isEditing ? (
+                {prayerDetails && !isEditing && (
                     <PrayerTimesDisplay prayerTimes={prayerTimes} />
-                ) : (
-                    <PrayerTimesForm mosqueDetails={mosqueDetails} placeId={placeId} prayerTimes={prayerTimes} />
+                )}
+                {mosqueDetails && isEditing && (
+                    <PrayerTimesForm mosqueDetails={mosqueDetails} placeId={placeId} prayerTimes={prayerTimes} onCancel={() => setIsEditing(false)} />
+                )}
+                {(!mosqueDetails || !prayerDetails) && !isEditing && (
+                    <div className="flex min-h-[260px] items-center justify-center">
+                        <p className="text-sm text-muted-foreground">No prayer times available</p>
+                    </div>
+                )}
+                
+                {isEditing && !mosqueDetails && (
+                    <div className="flex min-h-[260px] items-center justify-center">
+                        <p className="text-sm text-muted-foreground">No mosque details available</p>
+                    </div>
                 )}
             </div>
         </div>

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MosqueDetailsContentProps } from "@/types";
+import dayjs from "dayjs";
 import {
     ExternalLink,
     MapPin,
@@ -13,17 +14,17 @@ export const MosqueHeaderBanner = ({
   mosqueDetails,
   initialDetails,
 }: {
-  mosqueDetails: google.maps.places.PlaceResult;
+  mosqueDetails: google.maps.places.Place;
   initialDetails: Partial<MosqueDetailsContentProps>;
 }) => {
-  const mosqueName = mosqueDetails.name ?? initialDetails.initialName;
+  const mosqueName = mosqueDetails.displayName ?? initialDetails.initialName;
   const mosqueAddress =
-    mosqueDetails.formatted_address ?? initialDetails.initialAddress;
-  const openNow = mosqueDetails.opening_hours?.isOpen() ?? undefined;
+    mosqueDetails.formattedAddress ?? initialDetails.initialAddress;
+  const openNow = mosqueDetails.currentOpeningHours?.periods.some(period => period.open.day === dayjs().day()) ?? false;
   const rating = mosqueDetails.rating ?? undefined;
-  const totalRatings = mosqueDetails.user_ratings_total ?? undefined;
-  const mapsUrl = mosqueDetails.url ?? undefined;
-  const phone = mosqueDetails.formatted_phone_number ?? undefined;
+  const totalRatings = mosqueDetails.userRatingCount ?? undefined;
+  const mapsUrl = mosqueDetails.googleMapsURI ?? undefined;
+  const phone = mosqueDetails.nationalPhoneNumber ?? undefined;
 
   return (
     <div className="relative overflow-hidden rounded-xl bg-linear-to-br from-green-600 to-green-800 px-5 py-5 text-white">

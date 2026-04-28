@@ -42,7 +42,6 @@ export const useGetNearByPlaces = (location: Location | null) => {
         };
 
         placesLib.Place.searchNearby(request).then((response) => {
-            console.log("response", response);
             if (!response.places) return;
 
             setResults(

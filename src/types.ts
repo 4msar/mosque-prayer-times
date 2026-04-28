@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 export type RootStackParamList = {
     Home: undefined;
     MosqueDetails: {
@@ -31,5 +33,5 @@ export interface PrayerTimes {
 
 export interface PrayerDetails {
     prayerTimes: PrayerTimes;
-    lastUpdated: string | null;
+    lastUpdated: Timestamp | null;
 }

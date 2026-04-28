@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { db } from "@/services/firebaseConfig";
 import { PRAYER_LABELS, timeRegex } from "@/services/helpers";
 import { PrayerKey, PrayerTimes } from "@/types";
+import dayjs from "dayjs";
 import { doc, setDoc } from "firebase/firestore";
 import {
     Loader2,
@@ -15,15 +16,16 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 
-export const PrayerTimesForm = ({ mosqueDetails, placeId, prayerTimes }: { mosqueDetails: google.maps.places.PlaceResult, placeId:string, prayerTimes: PrayerTimes }) => {
+export const PrayerTimesForm = ({ mosqueDetails, placeId, prayerTimes, onCancel }: { mosqueDetails: google.maps.places.Place, placeId:string, prayerTimes: PrayerTimes, onCancel: () => void }) => {
     const [formData, setFormData] = useState<PrayerTimes>(prayerTimes);
     const [validationError, setValidationError] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
 
     const handleFieldChange = (field: PrayerKey, value: string) => {
-        setFormData((prev) => ({ ...prev, [field]: value }));
+        const finalValue = dayjs(value, "HH:mm").format("hh:mm A");
+        setFormData((prev) => ({ ...prev, [field]: finalValue }));
         setValidationError(
-            timeRegex.test(value) ? null : "Invalid time format. Use H:MM AM/PM (e.g. 5:00 AM)",
+            timeRegex.test(finalValue) ? null : "Invalid time format. Use H:MM AM/PM (e.g. 5:00 AM)",
         );
     };
 
@@ -36,10 +38,10 @@ export const PrayerTimesForm = ({ mosqueDetails, placeId, prayerTimes }: { mosqu
             setSaving(true);
             const docRef = doc(db, "mosques", placeId);
             await setDoc(docRef, {
-                name: mosqueDetails.name,
-                address: mosqueDetails.formatted_address,
-                latitude: mosqueDetails.geometry?.location?.lat() ?? 0,
-                longitude: mosqueDetails.geometry?.location?.lng() ?? 0,
+                name: mosqueDetails.displayName,
+                address: mosqueDetails.formattedAddress,
+                latitude: mosqueDetails.location?.lat() ?? 0,
+                longitude: mosqueDetails.location?.lng() ?? 0,
                 prayerTimes: formData,
                 lastUpdated: new Date(),
             });
@@ -57,6 +59,7 @@ export const PrayerTimesForm = ({ mosqueDetails, placeId, prayerTimes }: { mosqu
     const handleCancel = () => {
         setFormData(prayerTimes);
         setValidationError(null);
+        onCancel();
     };
 
     return ((
@@ -68,7 +71,7 @@ export const PrayerTimesForm = ({ mosqueDetails, placeId, prayerTimes }: { mosqu
             </p>
             <div className="space-y-2.5">
                 {PRAYER_LABELS.map(({ key, label, emoji }) => (
-                    <div key={key} className="flex items-center gap-3">
+                    <div key={key} className="flex items-center justify-between gap-3">
                         <Label
                             htmlFor={`panel-${key}`}
                             className="w-28 shrink-0 text-sm font-medium text-gray-700"
@@ -77,11 +80,15 @@ export const PrayerTimesForm = ({ mosqueDetails, placeId, prayerTimes }: { mosqu
                         </Label>
                         <Input
                             id={`panel-${key}`}
-                            value={prayerTimes[key]}
+                            value={dayjs(formData[key], "hh:mm A").format("HH:mm")}
                             onChange={(e) => handleFieldChange(key, e.target.value)}
-                            placeholder="5:00 AM"
+                            placeholder="05:00 AM"
+                            type="time"
+                            step="1800"
+                            min="00:00"
+                            max="23:59"
                             className={cn(
-                                "h-8 text-sm",
+                                "h-8 text-sm w-1/2",
                                 validationError && !timeRegex.test(prayerTimes[key])
                                     ? "border-red-400 focus-visible:ring-red-400"
                                     : "",

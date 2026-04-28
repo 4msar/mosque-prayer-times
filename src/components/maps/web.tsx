@@ -10,6 +10,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useGetLocation } from "@/hooks/use-location";
 import { useGetNearByPlaces } from "@/hooks/use-nearby-places";
 import { useOnlineStatus } from "@/hooks/use-online-status";
+import { useSettingsStore } from "@/store/settings-store";
 import { FloatingButton } from "@/components/floating-button";
 import { MosqueDetailsOverlay } from "@/components/mosque-details-overlay";
 import { WifiOff } from "lucide-react";
@@ -37,6 +38,7 @@ export const WebMaps = () => {
     const isOnline = useOnlineStatus();
 
     const currentLocation = useGetLocation();
+    const { radius } = useSettingsStore();
 
     const center = useMemo(() => {
         if (!currentLocation || !mapLib)
@@ -51,7 +53,7 @@ export const WebMaps = () => {
         );
     }, [currentLocation, mapLib]);
 
-    const mosques = useGetNearByPlaces(currentLocation ?? null);
+    const mosques = useGetNearByPlaces(currentLocation ?? null, radius);
 
     const handleMapClick = (event: MapMouseEvent) => {
         if (!event.detail.latLng) return;

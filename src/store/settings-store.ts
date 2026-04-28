@@ -1,0 +1,59 @@
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+
+export interface BookmarkedMosque {
+    placeId: string;
+    name: string;
+    address: string;
+}
+
+interface SettingsState {
+    radius: number;
+    darkMode: boolean;
+    bookmarks: BookmarkedMosque[];
+    setRadius: (radius: number) => void;
+    setDarkMode: (dark: boolean) => void;
+    addBookmark: (mosque: BookmarkedMosque) => void;
+    removeBookmark: (placeId: string) => void;
+    isBookmarked: (placeId: string) => boolean;
+}
+
+export const useSettingsStore = create<SettingsState>()(
+    persist(
+        (set, get) => ({
+            radius: 500,
+            darkMode: false,
+            bookmarks: [],
+
+            setRadius: (radius) => set({ radius }),
+
+            setDarkMode: (darkMode) => {
+                set({ darkMode });
+                if (darkMode) {
+                    document.documentElement.classList.add("dark");
+                } else {
+                    document.documentElement.classList.remove("dark");
+                }
+            },
+
+            addBookmark: (mosque) => {
+                const { bookmarks } = get();
+                if (bookmarks.some((b) => b.placeId === mosque.placeId)) return;
+                set({ bookmarks: [...bookmarks, mosque] });
+            },
+
+            removeBookmark: (placeId) =>
+                set({ bookmarks: get().bookmarks.filter((b) => b.placeId !== placeId) }),
+
+            isBookmarked: (placeId) => get().bookmarks.some((b) => b.placeId === placeId),
+        }),
+        {
+            name: "mpt-settings",
+            onRehydrateStorage: () => (state) => {
+                if (state?.darkMode) {
+                    document.documentElement.classList.add("dark");
+                }
+            },
+        },
+    ),
+);

@@ -2,7 +2,7 @@ import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
 import { useCallback, useEffect, useState } from "react";
 import { Location } from "./use-location";
 
-export const useGetNearByPlaces = (location: Location | null) => {
+export const useGetNearByPlaces = (location: Location | null, radius = 500) => {
     const placesLib = useMapsLibrary("places");
     useMapsLibrary("maps");
     const map = useMap();
@@ -32,7 +32,7 @@ export const useGetNearByPlaces = (location: Location | null) => {
                     location.latitude,
                     location.longitude,
                 ),
-                radius: 500,
+                radius,
             },
             // optional parameters
             includedPrimaryTypes: ["mosque"],
@@ -50,11 +50,11 @@ export const useGetNearByPlaces = (location: Location | null) => {
                 ),
             );
         });
-    }, [map, placesLib, location]);
+    }, [map, placesLib, location, radius]);
 
     useEffect(() => {
         findMosques();
-    }, [location, findMosques]);
+    }, [location, radius, findMosques]);
 
     return results;
 };

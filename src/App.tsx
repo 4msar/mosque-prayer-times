@@ -3,7 +3,6 @@ import { APIProvider } from "@vis.gl/react-google-maps";
 import { Toaster } from "@/components/ui/sonner";
 import HomePage from "@/pages/HomePage";
 import MosqueDetailsPage from "@/pages/MosqueDetailsPage";
-
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY ?? "";
 
 export default function App() {

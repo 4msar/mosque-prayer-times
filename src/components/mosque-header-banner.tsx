@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MosqueDetailsContentProps } from "@/types";
+import { useSettingsStore } from "@/store/settings-store";
 import dayjs from "dayjs";
 import {
+    Bookmark,
     ExternalLink,
     MapPin,
     Phone,
@@ -17,9 +19,24 @@ export const MosqueHeaderBanner = ({
   mosqueDetails: google.maps.places.Place;
   initialDetails: Partial<MosqueDetailsContentProps>;
 }) => {
+  const { addBookmark, removeBookmark, isBookmarked } = useSettingsStore();
   const mosqueName = mosqueDetails.displayName ?? initialDetails.initialName;
   const mosqueAddress =
     mosqueDetails.formattedAddress ?? initialDetails.initialAddress;
+  const placeId = mosqueDetails.id;
+  const bookmarked = isBookmarked(placeId);
+
+  const handleBookmark = () => {
+    if (bookmarked) {
+      removeBookmark(placeId);
+    } else {
+      addBookmark({
+        placeId,
+        name: mosqueName ?? "Unknown Mosque",
+        address: mosqueAddress ?? "",
+      });
+    }
+  };
   const openNow = mosqueDetails.currentOpeningHours?.periods.some(period => period.open.day === dayjs().day()) ?? false;
   const rating = mosqueDetails.rating ?? undefined;
   const totalRatings = mosqueDetails.userRatingCount ?? undefined;
@@ -65,7 +82,22 @@ export const MosqueHeaderBanner = ({
             )}
           </div>
         </div>
-        <div className="shrink-0 text-3xl select-none">🕌</div>
+        <div className="flex shrink-0 flex-col items-end gap-2">
+          <div className="text-3xl select-none">🕌</div>
+          <button
+            type="button"
+            onClick={handleBookmark}
+            aria-label={bookmarked ? "Remove bookmark" : "Add bookmark"}
+            className="rounded-full p-1 transition-colors hover:bg-white/20"
+          >
+            <Bookmark
+              className={cn(
+                "h-5 w-5 transition-colors",
+                bookmarked ? "fill-white text-white" : "text-white/60",
+              )}
+            />
+          </button>
+        </div>
       </div>
 
       {/* Action buttons */}

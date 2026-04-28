@@ -1,6 +1,6 @@
 import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
 import { useCallback, useEffect, useState } from "react";
-import { Location } from "./use-location";
+import { type Location } from "./use-location";
 
 export const useGetNearByPlaces = (location: Location | null, radius = 500) => {
     const placesLib = useMapsLibrary("places");
@@ -41,12 +41,12 @@ export const useGetNearByPlaces = (location: Location | null, radius = 500) => {
             language: "en-US",
         };
 
-        placesLib.Place.searchNearby(request).then((response) => {
+        placesLib.Place.searchNearby(request).then((response: { places: google.maps.places.Place[] }) => {
             if (!response.places) return;
 
             setResults(
                 response.places.filter(
-                    (place) => place.businessStatus === "OPERATIONAL",
+                    (place: google.maps.places.Place) => place.businessStatus === "OPERATIONAL",
                 ),
             );
         });

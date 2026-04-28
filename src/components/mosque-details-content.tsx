@@ -57,7 +57,7 @@ export function MosqueDetailsContent({
                 <div className="mb-3 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4 text-green-600" />
-                        <h3 className="text-sm font-semibold text-gray-800">Prayer Times</h3>
+                        <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">Prayer Times</h3>
                         {prayerDetails?.lastUpdated && (
                             <span className="text-[10px] text-muted-foreground">
                                 · Updated {getDate(prayerDetails.lastUpdated).format("D MMM YYYY, hh:mm A")}

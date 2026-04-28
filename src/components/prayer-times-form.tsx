@@ -63,8 +63,8 @@ export const PrayerTimesForm = ({ mosqueDetails, placeId, prayerTimes, onCancel 
     };
 
     return ((
-        <div className="rounded-xl border border-dashed border-green-200 bg-green-50/40 p-4">
-            <p className="mb-3 text-xs font-medium text-gray-600">
+        <div className="rounded-xl border border-dashed border-green-200 bg-green-50/40 p-4 dark:border-green-800 dark:bg-green-950/20">
+            <p className="mb-3 text-xs font-medium text-gray-600 dark:text-gray-400">
                 {prayerTimes.lastUpdated
                     ? "Update prayer times"
                     : "No prayer times yet — add them for this mosque"}
@@ -74,7 +74,7 @@ export const PrayerTimesForm = ({ mosqueDetails, placeId, prayerTimes, onCancel 
                     <div key={key} className="flex items-center justify-between gap-3">
                         <Label
                             htmlFor={`panel-${key}`}
-                            className="w-28 shrink-0 text-sm font-medium text-gray-700"
+                            className="w-28 shrink-0 text-sm font-medium text-gray-700 dark:text-gray-300"
                         >
                             {emoji} {label}
                         </Label>

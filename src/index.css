@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
     --color-primary: #16a34a;
     --color-primary-foreground: #ffffff;
@@ -16,6 +18,14 @@
     --radius-xl: 1rem;
 }
 
+.dark {
+    --color-background: #0f172a;
+    --color-foreground: #f8fafc;
+    --color-muted: #1e293b;
+    --color-muted-foreground: #94a3b8;
+    --color-border: #334155;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -26,6 +36,8 @@ body {
         Ubuntu, Cantarell, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
 }
 
 #root {

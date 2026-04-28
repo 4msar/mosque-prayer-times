@@ -17,8 +17,8 @@ export default function MosqueDetailsPage() {
     if (!placeId) return null;
 
     return (
-        <div className="flex h-full flex-col bg-slate-50">
-            <header className="flex items-center gap-3 border-b bg-white px-4 py-3 shadow-sm">
+        <div className="flex h-full flex-col bg-slate-50 dark:bg-gray-950">
+            <header className="flex items-center gap-3 border-b border-gray-200 bg-white px-4 py-3 shadow-sm dark:border-gray-800 dark:bg-gray-900">
                 <Button
                     variant="ghost"
                     size="icon"
@@ -27,7 +27,7 @@ export default function MosqueDetailsPage() {
                 >
                     <ArrowLeft className="h-5 w-5" />
                 </Button>
-                <h1 className="truncate text-base font-semibold text-gray-900">
+                <h1 className="truncate text-base font-semibold text-gray-900 dark:text-gray-100">
                     {routeState?.name ?? "Mosque Details"}
                 </h1>
             </header>

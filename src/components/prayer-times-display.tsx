@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { getNextPrayer, PRAYER_LABELS } from "@/services/helpers";
-import { PrayerKey, PrayerTimes } from "@/types";
+import type { PrayerKey, PrayerTimes } from "@/types";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 

@@ -1,4 +1,4 @@
-import { PrayerKey, PrayerTimes } from "@/types";
+import type { PrayerKey, PrayerTimes } from "@/types";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 

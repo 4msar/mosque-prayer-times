@@ -1,7 +1,7 @@
 import {
     AdvancedMarker,
     Map,
-    MapMouseEvent,
+    type MapMouseEvent,
     Pin,
     useMap,
     useMapsLibrary,
@@ -17,7 +17,7 @@ import { WifiOff } from "lucide-react";
 
 const markerImage = "/marker.png";
 
-export const defaultLocation = {
+const defaultLocation = {
     latitude: 23.7706621,
     longitude: 90.3751423,
 };

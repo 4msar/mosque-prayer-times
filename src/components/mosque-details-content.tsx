@@ -13,7 +13,7 @@ import { useState } from "react";
 import { MosqueHeaderBanner } from "./mosque-header-banner";
 import { PrayerTimesDisplay } from "./prayer-times-display";
 import { PrayerTimesForm } from "./prayer-times-form";
-import { MosqueDetailsContentProps } from "@/types";
+import type { MosqueDetailsContentProps } from "@/types";
 import { Timestamp } from "firebase/firestore";
 
 dayjs.extend(customParseFormat);

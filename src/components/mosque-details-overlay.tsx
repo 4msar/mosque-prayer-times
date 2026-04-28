@@ -14,7 +14,7 @@ import {
     DrawerDescription,
 } from "@/components/ui/drawer";
 import { MosqueDetailsContent } from "./mosque-details-content";
-import { MosqueDetailsContentProps } from "@/types";
+import type { MosqueDetailsContentProps } from "@/types";
 
 interface MosqueDetailsOverlayProps extends MosqueDetailsContentProps {
     open: boolean;

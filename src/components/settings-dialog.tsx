@@ -204,8 +204,8 @@ export function SettingsDialog() {
                     <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
                     <DialogClose asChild>
                       <Link to={`/mosque/${mosque.placeId}`} className="min-w-0 flex-1 text-left">
-                        <p className="truncate text-sm font-medium">{mosque.name}</p>
-                        <p className="truncate text-xs text-muted-foreground">{mosque.address}</p>
+                        <p className="truncate text-sm font-medium whitespace-break-spaces">{mosque.name}</p>
+                        <p className="truncate text-xs text-muted-foreground whitespace-break-spaces">{mosque.address}</p>
                       </Link>
                     </DialogClose>
                     <Button

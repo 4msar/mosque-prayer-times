@@ -93,7 +93,7 @@ export default function AboutPage() {
         {/* Legal */}
         <section className="space-y-3">
           <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            Legal
+            Legal &amp; Support
           </h3>
           <div className="flex flex-col gap-2">
             <Link
@@ -110,6 +110,22 @@ export default function AboutPage() {
               Terms of Service
               <ArrowLeft className="h-4 w-4 rotate-180 text-muted-foreground" />
             </Link>
+            <Link
+              to="mailto:contact@mpt.life"
+              className="flex items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-800 hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800 transition-colors"
+            >
+              Email Support
+              <ArrowLeft className="h-4 w-4 rotate-180 text-muted-foreground" />
+            </Link>
+            <a
+              href="https://github.com/4msar/mosque-prayer-times"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-800 hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800 transition-colors"
+            >
+              GitHub Repository
+              <ArrowLeft className="h-4 w-4 rotate-180 text-muted-foreground" />
+            </a>
           </div>
         </section>
 

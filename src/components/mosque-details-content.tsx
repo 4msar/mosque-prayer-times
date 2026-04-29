@@ -1,7 +1,9 @@
 import { Button } from '@/components/ui/button';
+import { useAladhanPrayerTimes } from '@/hooks/use-aladhan-prayer-times';
 import { useMosqueDetails } from '@/hooks/use-mosque-details';
 import { usePrayerDetails } from '@/hooks/use-prayer-details';
 import { defaultPrayerTimes } from '@/services/helpers';
+import { useSettingsStore } from '@/store/settings-store';
 import type { MosqueDetailsContentProps } from '@/types';
 import dayjs from '@/lib/dayjs';
 import { Timestamp } from 'firebase/firestore';
@@ -15,8 +17,19 @@ import { Skeleton } from './ui/skeleton';
 export function MosqueDetailsContent({ placeId, ...initialDetails }: MosqueDetailsContentProps) {
   const { data: mosqueDetails, loading: mosqueDetailsLoading } = useMosqueDetails(placeId);
   const { data: prayerDetails, isLoading: prayerDetailsLoading, mutate } = usePrayerDetails(placeId);
-  const prayerTimes = prayerDetails?.prayerTimes ?? defaultPrayerTimes;
+  const { aladhan } = useSettingsStore();
   const [isEditing, setIsEditing] = useState(false);
+
+  const mosqueCoords =
+    mosqueDetails
+      ? { latitude: mosqueDetails.location?.lat() ?? 0, longitude: mosqueDetails.location?.lng() ?? 0 }
+      : undefined;
+
+  const { data: aladhanTimes, isLoading: aladhanLoading } = useAladhanPrayerTimes(
+    !prayerDetails && aladhan.enabled ? mosqueCoords : undefined
+  );
+
+  const prayerTimes = prayerDetails?.prayerTimes ?? defaultPrayerTimes;
 
   const handleSaved = ({ prayerTimes: updatedTimes, lastUpdated }: { prayerTimes: typeof prayerTimes; lastUpdated: Date }) => {
     mutate(
@@ -42,24 +55,25 @@ export function MosqueDetailsContent({ placeId, ...initialDetails }: MosqueDetai
     return dayjs(prayerTimes.lastUpdated);
   };
 
-  if (mosqueDetailsLoading || prayerDetailsLoading) {
+  const isLoading = mosqueDetailsLoading || prayerDetailsLoading || (aladhan.enabled && !prayerDetails && aladhanLoading);
+
+  if (isLoading) {
     return (
       <div className="flex flex-col gap-4 min-h-[260px] items-center justify-center">
-        {/* Skeleton */}
         <Skeleton className="h-42 w-full rounded-md mb-4" />
         <Skeleton className="h-full flex-1 min-h-64 w-full rounded-md" />
       </div>
     );
   }
 
+  const showAladhan = !prayerDetails && !isEditing && aladhan.enabled && aladhanTimes;
+
   return (
     <div className="flex flex-col">
-      {/* Mosque header banner */}
       {mosqueDetails && (
         <MosqueHeaderBanner mosqueDetails={mosqueDetails} initialDetails={initialDetails} />
       )}
 
-      {/* Prayer times section */}
       <div className="mt-4">
         <div className="mb-3 flex items-center justify-between">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
@@ -68,7 +82,7 @@ export function MosqueDetailsContent({ placeId, ...initialDetails }: MosqueDetai
               Prayer Times
             </h3>
           </div>
-          {prayerDetails && !isEditing && (
+          {!isEditing && (
             <Button
               variant="ghost"
               size="sm"
@@ -76,19 +90,54 @@ export function MosqueDetailsContent({ placeId, ...initialDetails }: MosqueDetai
               onClick={() => setIsEditing(true)}
             >
               <Pencil className="h-3 w-3" />
-              Edit
+              {prayerDetails ? 'Edit' : 'Add'}
             </Button>
           )}
         </div>
 
-        {/* Has prayer times and not editing — show display */}
+        {/* Has prayer times from Firebase and not editing */}
         {prayerDetails && !isEditing && <PrayerTimesDisplay prayerTimes={prayerTimes} />}
 
-        {/* Has mosque details but no prayer times — show message + form to add */}
-        {mosqueDetails && !prayerDetails && !isEditing && (
+        {/* AlAdhan fallback when no Firebase prayer times */}
+        {showAladhan && (
+          <>
+            <PrayerTimesDisplay prayerTimes={aladhanTimes} />
+            <div className="mt-3 flex items-center justify-center gap-1.5">
+              <a
+                href="https://aladhan.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[11px] font-medium text-blue-700 transition-colors hover:bg-blue-100 dark:border-blue-800 dark:bg-blue-950/40 dark:text-blue-400 dark:hover:bg-blue-900/60"
+              >
+                <span>🕌</span>
+                Prayer times provided by AlAdhan.com
+              </a>
+            </div>
+          </>
+        )}
+
+        {/* No Firebase prayer times and AlAdhan disabled — show form */}
+        {mosqueDetails && !prayerDetails && !isEditing && !aladhan.enabled && (
           <>
             <p className="text-sm text-center mb-4 border p-4 rounded-lg text-yellow-700 bg-yellow-50">
               No prayer times available. Please add prayer times below.
+            </p>
+            <PrayerTimesForm
+              mosqueDetails={mosqueDetails}
+              placeId={placeId}
+              prayerTimes={prayerTimes}
+              existsPrayerTimes={false}
+              onCancel={() => setIsEditing(false)}
+              onSaved={handleSaved}
+            />
+          </>
+        )}
+
+        {/* AlAdhan enabled but couldn't fetch */}
+        {mosqueDetails && !prayerDetails && !isEditing && aladhan.enabled && !aladhanTimes && (
+          <>
+            <p className="text-sm text-center mb-4 border p-4 rounded-lg text-yellow-700 bg-yellow-50">
+              Could not load prayer times from AlAdhan. Please add times manually.
             </p>
             <PrayerTimesForm
               mosqueDetails={mosqueDetails}

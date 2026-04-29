@@ -1,3 +1,4 @@
+import { DEFAULT_ALADHAN_SETTINGS, type AladhanSettings } from '@/services/aladhan';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -15,6 +16,7 @@ interface SettingsState {
   darkMode: boolean;
   bookmarks: BookmarkedMosque[];
   chooseLocationFromMap: boolean;
+  aladhan: AladhanSettings;
   setRadius: (radius: number) => void;
   setRankPreference: (pref: RankPreference) => void;
   setDarkMode: (dark: boolean) => void;
@@ -22,6 +24,7 @@ interface SettingsState {
   removeBookmark: (placeId: string) => void;
   isBookmarked: (placeId: string) => boolean;
   setLocationFromMap: (chooseLocationFromMap: boolean) => void;
+  setAladhan: (settings: Partial<AladhanSettings>) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -32,6 +35,7 @@ export const useSettingsStore = create<SettingsState>()(
       darkMode: false,
       bookmarks: [],
       chooseLocationFromMap: false,
+      aladhan: DEFAULT_ALADHAN_SETTINGS,
 
       setRadius: (radius) => set({ radius }),
       setRankPreference: (rankPreference) => set({ rankPreference }),
@@ -52,6 +56,8 @@ export const useSettingsStore = create<SettingsState>()(
         set({ bookmarks: get().bookmarks.filter((b) => b.placeId !== placeId) }),
       isBookmarked: (placeId) => get().bookmarks.some((b) => b.placeId === placeId),
       setLocationFromMap: (chooseLocationFromMap) => set({ chooseLocationFromMap }),
+      setAladhan: (settings) =>
+        set((state) => ({ aladhan: { ...state.aladhan, ...settings } })),
     }),
     {
       name: 'mpt-settings',

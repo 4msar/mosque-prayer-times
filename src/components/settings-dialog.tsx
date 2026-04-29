@@ -7,12 +7,20 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ALADHAN_METHODS, ALADHAN_SCHOOLS } from '@/services/aladhan';
 import { useSettingsStore } from '@/store/settings-store';
 import { Close as DialogClose } from '@radix-ui/react-dialog';
-import { ArrowUpDown, Bookmark, MapPin, Settings2, Star, Trash2 } from 'lucide-react';
+import { ArrowUpDown, Bookmark, Clock, MapPin, Settings2, Star, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const RADIUS_OPTIONS = [100, 500, 1000, 2000];
@@ -28,6 +36,8 @@ export function SettingsDialog() {
     bookmarks,
     removeBookmark,
     setLocationFromMap,
+    aladhan,
+    setAladhan,
   } = useSettingsStore();
 
   return (
@@ -56,6 +66,10 @@ export function SettingsDialog() {
             <TabsTrigger value="general" className="flex-1 gap-1.5">
               <Settings2 className="h-3.5 w-3.5" />
               General
+            </TabsTrigger>
+            <TabsTrigger value="prayer-times" className="flex-1 gap-1.5">
+              <Clock className="h-3.5 w-3.5" />
+              Prayer Times
             </TabsTrigger>
             <TabsTrigger value="bookmarks" className="flex-1 gap-1.5">
               <Bookmark className="h-3.5 w-3.5" />
@@ -182,6 +196,96 @@ export function SettingsDialog() {
                 </button>
               </div>
             </div>
+          </TabsContent>
+
+          {/* Prayer Times Tab */}
+          <TabsContent value="prayer-times" className="space-y-5 pt-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="aladhan-enabled" className="text-sm font-medium">
+                  Use AlAdhan API
+                </Label>
+                <p className="text-xs text-muted-foreground">
+                  Show prayer times from AlAdhan.com when no times are saved
+                </p>
+              </div>
+              <Switch
+                id="aladhan-enabled"
+                checked={aladhan.enabled}
+                onCheckedChange={(checked) => setAladhan({ enabled: checked })}
+              />
+            </div>
+
+            {aladhan.enabled && (
+              <>
+                <div className="border-t" />
+
+                <div className="rounded-lg border border-green-100 bg-green-50/50 p-3 dark:border-green-900 dark:bg-green-950/20">
+                  <p className="text-xs text-green-700 dark:text-green-400">
+                    Prayer times will be fetched from{' '}
+                    <a
+                      href="https://aladhan.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline underline-offset-2"
+                    >
+                      AlAdhan.com
+                    </a>{' '}
+                    based on your current location when no saved times exist for a mosque.
+                  </p>
+                </div>
+
+                {/* Calculation Method */}
+                <div className="space-y-2">
+                  <Label htmlFor="aladhan-method" className="text-sm font-medium">
+                    Calculation Method
+                  </Label>
+                  <p className="text-xs text-muted-foreground">
+                    Islamic authority used for prayer time calculations
+                  </p>
+                  <Select
+                    value={String(aladhan.method)}
+                    onValueChange={(val) => setAladhan({ method: Number(val) })}
+                  >
+                    <SelectTrigger id="aladhan-method" className="w-full">
+                      <SelectValue placeholder="Select method" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-64">
+                      {ALADHAN_METHODS.map((m) => (
+                        <SelectItem key={m.value} value={String(m.value)}>
+                          {m.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* School / Madhab */}
+                <div className="space-y-2">
+                  <Label htmlFor="aladhan-school" className="text-sm font-medium">
+                    Juristic School (Asr)
+                  </Label>
+                  <p className="text-xs text-muted-foreground">
+                    Determines Asr prayer time calculation
+                  </p>
+                  <Select
+                    value={String(aladhan.school)}
+                    onValueChange={(val) => setAladhan({ school: Number(val) })}
+                  >
+                    <SelectTrigger id="aladhan-school" className="w-full">
+                      <SelectValue placeholder="Select school" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ALADHAN_SCHOOLS.map((s) => (
+                        <SelectItem key={s.value} value={String(s.value)}>
+                          {s.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </>
+            )}
           </TabsContent>
 
           {/* Bookmarks Tab */}

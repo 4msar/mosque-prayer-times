@@ -71,7 +71,7 @@ export default function BookmarksPage() {
 
                   <div className="flex shrink-0 items-center gap-1">
                     <Button asChild size="sm" variant="ghost" className="h-8 px-3 text-xs text-green-700 hover:bg-green-50 hover:text-green-800 dark:text-green-400 dark:hover:bg-green-900/30">
-                      <Link to={`/mosque/${mosque.placeId}`}>
+                      <Link to={`/?placeId=${mosque.placeId}`}>
                         View
                         <MoveRight className="ml-1 h-3.5 w-3.5" />
                       </Link>

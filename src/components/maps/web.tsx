@@ -8,6 +8,7 @@ import {
   useMapsLibrary,
 } from '@vis.gl/react-google-maps';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useGetLocation, type Location } from '@/hooks/use-location';
 import { useGetNearByPlaces } from '@/hooks/use-nearby-places';
 import { useOnlineStatus } from '@/hooks/use-online-status';
@@ -15,6 +16,7 @@ import { useSettingsStore } from '@/store/settings-store';
 import { FloatingButton } from '@/components/floating-button';
 import { MosqueDetailsOverlay } from '@/components/mosque-details-overlay';
 import { WifiOff } from 'lucide-react';
+import { useMosqueDetails } from '@/hooks/use-mosque-details';
 
 const markerImage = '/marker.png';
 
@@ -38,9 +40,13 @@ export const WebMaps = () => {
   const [overlayOpen, setOverlayOpen] = useState(false);
   const { chooseLocationFromMap, setLocationFromMap } = useSettingsStore();
   const isOnline = useOnlineStatus();
+  const [searchParams] = useSearchParams();
+  const highlightedPlaceId = searchParams.get('placeId');
 
-  const {location: geoLocation, getLocation} = useGetLocation();
+  const { location: geoLocation, getLocation } = useGetLocation();
   const [currentLocation, setCurrentLocation] = useState<Location | null>(geoLocation ?? null);
+
+  const { data: mosqueDetails } = useMosqueDetails(highlightedPlaceId);
 
   const { radius, rankPreference, darkMode } = useSettingsStore();
 
@@ -94,11 +100,14 @@ export const WebMaps = () => {
 
     setLocationFromMap(false);
 
+    searchParams.delete('placeId');
+    history.pushState(null, '', window.location.pathname);
+
     map?.setCenter({
       lat: geoLocation.latitude,
       lng: geoLocation.longitude,
     });
-  }, [geoLocation, map, setLocationFromMap, getLocation]);
+  }, [geoLocation, map, searchParams, setLocationFromMap, getLocation]);
 
   useEffect(() => {
     if (geoLocation) {
@@ -114,6 +123,18 @@ export const WebMaps = () => {
       });
     }
   }, [currentLocation, geoLocation, map]);
+
+  useEffect(() => {
+    if (!highlightedPlaceId || !mosqueDetails?.location || !map) return;
+
+    setCurrentLocation({
+      latitude: mosqueDetails?.location?.lat(),
+      longitude: mosqueDetails?.location?.lng(),
+    });
+
+    map.setCenter({ lat: mosqueDetails?.location?.lat(), lng: mosqueDetails?.location?.lng() });
+    map.setZoom(18);
+  }, [highlightedPlaceId, mosqueDetails?.location, map]);
 
   if (!isOnline) {
     return (
@@ -149,16 +170,33 @@ export const WebMaps = () => {
           </AdvancedMarker>
         )}
 
-        {mosques.map((item) => (
-          <AdvancedMarker
-            key={item.id}
-            title={item.displayName ?? undefined}
-            position={item.location}
-            onClick={() => handleMosqueClick(item)}
-          >
-            <img src={markerImage} width={40} height={40} alt={item.displayName ?? 'mosque'} />
-          </AdvancedMarker>
-        ))}
+        {mosques.map((item) => {
+          const isHighlighted = item.id === highlightedPlaceId;
+          return (
+            <AdvancedMarker
+              key={item.id}
+              title={item.displayName ?? undefined}
+              position={item.location}
+              onClick={() => handleMosqueClick(item)}
+            >
+              <div className="relative flex items-center justify-center">
+                {isHighlighted && (
+                  <>
+                    <span className="absolute inline-flex h-14 w-14 rounded-full bg-emerald-400 opacity-60 animate-ping" />
+                    <span className="absolute inline-flex h-10 w-10 rounded-full bg-emerald-300 opacity-40 animate-ping [animation-delay:150ms]" />
+                  </>
+                )}
+                <img
+                  src={markerImage}
+                  width={40}
+                  height={40}
+                  alt={item.displayName ?? 'mosque'}
+                  className="relative z-10"
+                />
+              </div>
+            </AdvancedMarker>
+          );
+        })}
 
         {chooseLocationFromMap && (
           <div className="fixed bottom-20 left-0 right-0 p-4 bg-black/50 backdrop-blur-sm rounded-lg w-[60dvw] md:w-80 mx-auto text-center text-white">

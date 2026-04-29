@@ -1,16 +1,29 @@
 import { SettingsDialog } from '@/components/settings-dialog';
-import { Link, useLocation } from 'react-router-dom';
-import { HelpDialog } from '../help-dialog';
 import { useSettingsStore } from '@/store/settings-store';
-import { Bookmark } from 'lucide-react';
+import { ArrowLeft, Bookmark } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { HelpDialog } from '../help-dialog';
+import { Button } from '../ui/button';
 
-export const Header = () => {
+export const Header = ({ mosqueDetailsPage }: { mosqueDetailsPage?: boolean }) => {
   const { bookmarks } = useSettingsStore();
   const location = useLocation();
   const isBookmarksPage = location.pathname === '/bookmarks';
+  const navigate = useNavigate();
 
-  return (
-    <header className="flex sticky top-0 z-10 items-center gap-2 border-b border-gray-200 bg-white px-4 py-3 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+  const mosqueDetailsHeader = (
+    <>
+      <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="shrink-0">
+        <ArrowLeft className="h-5 w-5" />
+      </Button>
+      <h1 className="truncate text-base font-semibold text-gray-900 dark:text-gray-100">
+        {location?.state?.name ?? 'Mosque Details'}
+      </h1>
+    </>
+  );
+
+  const homeHeader = (
+    <>
       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-600">
         <Link to="/">
           <img src="/icons/icon-512x512.png" alt="logo" className="h-8 w-8" />
@@ -28,6 +41,12 @@ export const Header = () => {
           Mosque prayer times
         </p>
       </div>
+    </>
+  );
+
+  return (
+    <header className="flex sticky top-0 z-10 items-center gap-2 border-b border-gray-200 bg-white px-4 py-3 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+      {mosqueDetailsPage ? mosqueDetailsHeader : homeHeader}
 
       <div className="ml-auto flex items-center gap-1">
         <Link
@@ -44,9 +63,14 @@ export const Header = () => {
             </span>
           )}
         </Link>
-        <HelpDialog />
+        {location.pathname === '/' && <HelpDialog />}
         <SettingsDialog />
       </div>
     </header>
   );
 };
+
+{
+  /* <header className="flex items-center sticky top-0 z-10 gap-3 border-b border-gray-200 bg-white px-4 py-3 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+</header> */
+}

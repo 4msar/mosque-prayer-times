@@ -58,7 +58,7 @@ export function MosqueDetailsOverlay({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] max-w-lg overflow-y-auto p-5 [&_.close-button]:top-1 [&_.close-button]:right-1">
+      <DialogContent className="max-h-[90vh] max-w-lg overflow-y-auto p-5 [&_.close-button]:top-1 [&_.close-button]:right-1 no-scrollbar">
         <DialogHeader className="sr-only">
           <DialogTitle>{initialName ?? 'Mosque Details'}</DialogTitle>
           <DialogDescription>Prayer times and mosque information</DialogDescription>

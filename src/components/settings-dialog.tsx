@@ -53,7 +53,7 @@ export function SettingsDialog() {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-md sm:max-w-lg">
+      <DialogContent className="max-w-md sm:max-w-lg max-h-[90vh] overflow-y-auto no-scrollbar">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-base">
             <Settings2 className="h-4 w-4" />

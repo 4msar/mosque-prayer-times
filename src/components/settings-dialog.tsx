@@ -53,7 +53,7 @@ export function SettingsDialog() {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-md sm:max-w-lg max-h-[90vh] overflow-y-auto no-scrollbar">
+      <DialogContent className="w-[calc(100vw-2rem)] max-w-md sm:max-w-lg max-h-[90vh] overflow-y-auto overflow-x-hidden no-scrollbar">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-base">
             <Settings2 className="h-4 w-4" />
@@ -63,19 +63,19 @@ export function SettingsDialog() {
 
         <Tabs defaultValue="general" className="mt-1">
           <TabsList className="w-full">
-            <TabsTrigger value="general" className="flex-1 gap-1.5">
-              <Settings2 className="h-3.5 w-3.5" />
-              General
+            <TabsTrigger value="general" className="flex-1 gap-1 text-xs sm:gap-1.5 sm:text-sm">
+              <Settings2 className="h-3.5 w-3.5 shrink-0" />
+              <span className="truncate">General</span>
             </TabsTrigger>
-            <TabsTrigger value="prayer-times" className="flex-1 gap-1.5">
-              <Clock className="h-3.5 w-3.5" />
-              Prayer Times
+            <TabsTrigger value="prayer-times" className="flex-1 gap-1 text-xs sm:gap-1.5 sm:text-sm">
+              <Clock className="h-3.5 w-3.5 shrink-0" />
+              <span className="truncate">Prayer Times</span>
             </TabsTrigger>
-            <TabsTrigger value="bookmarks" className="flex-1 gap-1.5">
-              <Bookmark className="h-3.5 w-3.5" />
-              Bookmarks
+            <TabsTrigger value="bookmarks" className="flex-1 gap-1 text-xs sm:gap-1.5 sm:text-sm">
+              <Bookmark className="h-3.5 w-3.5 shrink-0" />
+              <span className="truncate">Bookmarks</span>
               {bookmarks.length > 0 && (
-                <span className="ml-0.5 rounded-full bg-green-600 px-1.5 py-0 text-[10px] font-semibold text-white leading-4">
+                <span className="ml-0.5 shrink-0 rounded-full bg-green-600 px-1.5 py-0 text-[10px] font-semibold text-white leading-4">
                   {bookmarks.length}
                 </span>
               )}
@@ -85,20 +85,20 @@ export function SettingsDialog() {
           {/* General Tab */}
           <TabsContent value="general" className="space-y-6 pt-4">
             {/* Dark Mode */}
-            <div className="flex items-center justify-between">
-              <div>
+            <div className="flex items-center justify-between gap-4">
+              <div className="min-w-0">
                 <Label htmlFor="dark-mode" className="text-sm font-medium">
                   Dark Mode
                 </Label>
                 <p className="text-xs text-muted-foreground">Switch between light and dark theme</p>
               </div>
-              <Switch id="dark-mode" checked={darkMode} onCheckedChange={setDarkMode} />
+              <Switch id="dark-mode" checked={darkMode} onCheckedChange={setDarkMode} className="shrink-0" />
             </div>
 
             <div className="border-t" />
 
-            <div className="flex items-center justify-between">
-              <div>
+            <div className="flex items-center justify-between gap-4">
+              <div className="min-w-0">
                 <Label htmlFor="set-location-from-map" className="text-sm font-medium">
                   Set location from map
                 </Label>
@@ -109,7 +109,7 @@ export function SettingsDialog() {
                   variant="ghost"
                   size="icon"
                   onClick={() => setLocationFromMap(true)}
-                  className="border"
+                  className="shrink-0 border"
                 >
                   <MapPin className="h-4 w-4 text-green-600" />
                 </Button>
@@ -120,14 +120,14 @@ export function SettingsDialog() {
 
             {/* Search Radius */}
             <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div>
+              <div className="flex items-center justify-between gap-4">
+                <div className="min-w-0">
                   <Label className="text-sm font-medium">Search Radius</Label>
                   <p className="text-xs text-muted-foreground">
                     Distance to search for nearby mosques
                   </p>
                 </div>
-                <span className="rounded-md bg-green-50 px-2 py-0.5 text-sm font-semibold text-green-700 dark:bg-green-950 dark:text-green-300">
+                <span className="shrink-0 rounded-md bg-green-50 px-2 py-0.5 text-sm font-semibold text-green-700 dark:bg-green-950 dark:text-green-300">
                   {radius >= 1000 ? `${radius / 1000} km` : `${radius} m`}
                 </span>
               </div>
@@ -156,7 +156,7 @@ export function SettingsDialog() {
                 ))}
               </div>
 
-              <p className="text-xs italic text-muted-foreground">
+              <p className="wrap-break-word text-xs italic text-muted-foreground">
                 Max search result count is 20, and the radius is the distance from your location.
               </p>
             </div>
@@ -200,8 +200,8 @@ export function SettingsDialog() {
 
           {/* Prayer Times Tab */}
           <TabsContent value="prayer-times" className="space-y-5 pt-4">
-            <div className="flex items-center justify-between">
-              <div>
+            <div className="flex items-center justify-between gap-4">
+              <div className="min-w-0">
                 <Label htmlFor="aladhan-enabled" className="text-sm font-medium">
                   Use AlAdhan API
                 </Label>
@@ -213,6 +213,7 @@ export function SettingsDialog() {
                 id="aladhan-enabled"
                 checked={aladhan.enabled}
                 onCheckedChange={(checked) => setAladhan({ enabled: checked })}
+                className="shrink-0"
               />
             </div>
 
@@ -308,8 +309,8 @@ export function SettingsDialog() {
                     <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
                     <DialogClose asChild>
                       <Link to={`/mosque/${mosque.placeId}`} className="min-w-0 flex-1 text-left">
-                        <p className="truncate text-sm font-medium whitespace-break-spaces">{mosque.name}</p>
-                        <p className="truncate text-xs text-muted-foreground whitespace-break-spaces">{mosque.address}</p>
+                        <p className="truncate text-sm font-medium">{mosque.name}</p>
+                        <p className="truncate text-xs text-muted-foreground">{mosque.address}</p>
                       </Link>
                     </DialogClose>
                     <Button

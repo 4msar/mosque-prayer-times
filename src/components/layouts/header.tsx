@@ -1,10 +1,13 @@
 import { SettingsDialog } from '@/components/settings-dialog';
+import { Link } from 'react-router-dom';
 
 export const Header = () => {
   return (
     <header className="flex sticky top-0 z-10 items-center gap-2 border-b border-gray-200 bg-white px-4 py-3 shadow-sm dark:border-gray-800 dark:bg-gray-950">
       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-600">
-        <img src="/icons/icon-512x512.png" alt="logo" className="h-8 w-8" />
+        <Link to="/">
+          <img src="/icons/icon-512x512.png" alt="logo" className="h-8 w-8" />
+        </Link>
       </div>
       <div className="h-8 flex flex-col items-start justify-center gap-0.5">
         <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100 leading-4 mt-2">

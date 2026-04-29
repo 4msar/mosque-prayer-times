@@ -223,6 +223,26 @@ export function SettingsDialog() {
             )}
           </TabsContent>
         </Tabs>
+
+        <div className="border-t pt-3 flex items-center justify-center gap-3 text-xs text-muted-foreground">
+          <DialogClose asChild>
+            <Link to="/about" className="hover:text-foreground transition-colors">
+              About
+            </Link>
+          </DialogClose>
+          <span aria-hidden="true">&middot;</span>
+          <DialogClose asChild>
+            <Link to="/privacy" className="hover:text-foreground transition-colors">
+              Privacy
+            </Link>
+          </DialogClose>
+          <span aria-hidden="true">&middot;</span>
+          <DialogClose asChild>
+            <Link to="/terms" className="hover:text-foreground transition-colors">
+              Terms
+            </Link>
+          </DialogClose>
+        </div>
       </DialogContent>
     </Dialog>
   );

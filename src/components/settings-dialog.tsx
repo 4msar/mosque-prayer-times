@@ -20,7 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ALADHAN_METHODS, ALADHAN_SCHOOLS } from '@/services/aladhan';
 import { useSettingsStore } from '@/store/settings-store';
 import { Close as DialogClose } from '@radix-ui/react-dialog';
-import { ArrowUpDown, Bookmark, Clock, MapPin, Settings2, Star, Trash2 } from 'lucide-react';
+import { ArrowUpDown, Clock, MapPin, Settings2, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const RADIUS_OPTIONS = [100, 500, 1000, 2000];
@@ -33,8 +33,6 @@ export function SettingsDialog() {
     setRankPreference,
     darkMode,
     setDarkMode,
-    bookmarks,
-    removeBookmark,
     setLocationFromMap,
     aladhan,
     setAladhan,
@@ -70,15 +68,6 @@ export function SettingsDialog() {
             <TabsTrigger value="prayer-times" className="flex-1 gap-1 text-xs sm:gap-1.5 sm:text-sm w-full sm:w-auto">
               <Clock className="h-3.5 w-3.5 shrink-0" />
               <span className="truncate">Prayer Times</span>
-            </TabsTrigger>
-            <TabsTrigger value="bookmarks" className="flex-1 gap-1 text-xs sm:gap-1.5 sm:text-sm w-full sm:w-auto">
-              <Bookmark className="h-3.5 w-3.5 shrink-0" />
-              <span className="truncate">Bookmarks</span>
-              {bookmarks.length > 0 && (
-                <span className="ml-0.5 shrink-0 rounded-full bg-green-600 px-1.5 py-0 text-[10px] font-semibold text-white leading-4">
-                  {bookmarks.length}
-                </span>
-              )}
             </TabsTrigger>
           </TabsList>
 
@@ -286,45 +275,6 @@ export function SettingsDialog() {
                   </Select>
                 </div>
               </>
-            )}
-          </TabsContent>
-
-          {/* Bookmarks Tab */}
-          <TabsContent value="bookmarks" className="pt-4">
-            {bookmarks.length === 0 ? (
-              <div className="flex flex-col items-center justify-center gap-3 py-10 text-center text-muted-foreground">
-                <Bookmark className="h-10 w-10 opacity-30" />
-                <p className="text-sm font-medium">No bookmarks yet</p>
-                <p className="max-w-[220px] text-xs">
-                  Open a mosque and tap the bookmark icon to save it here.
-                </p>
-              </div>
-            ) : (
-              <ul className="max-h-72 space-y-2 overflow-y-auto pr-1">
-                {bookmarks.map((mosque) => (
-                  <li
-                    key={mosque.placeId}
-                    className="flex items-start gap-3 rounded-lg border p-3 hover:bg-muted/50"
-                  >
-                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
-                    <DialogClose asChild>
-                      <Link to={`/mosque/${mosque.placeId}`} className="min-w-0 flex-1 text-left">
-                        <p className="truncate text-sm font-medium">{mosque.name}</p>
-                        <p className="truncate text-xs text-muted-foreground">{mosque.address}</p>
-                      </Link>
-                    </DialogClose>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 shrink-0 text-destructive hover:bg-destructive/10"
-                      onClick={() => removeBookmark(mosque.placeId)}
-                      aria-label="Remove bookmark"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </Button>
-                  </li>
-                ))}
-              </ul>
             )}
           </TabsContent>
         </Tabs>

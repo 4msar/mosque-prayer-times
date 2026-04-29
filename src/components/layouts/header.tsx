@@ -1,5 +1,6 @@
 import { SettingsDialog } from '@/components/settings-dialog';
 import { Link } from 'react-router-dom';
+import { HelpDialog } from '../help-dialog';
 
 export const Header = () => {
   return (
@@ -23,6 +24,7 @@ export const Header = () => {
       </div>
 
       <div className="ml-auto">
+        <HelpDialog />
         <SettingsDialog />
       </div>
     </header>

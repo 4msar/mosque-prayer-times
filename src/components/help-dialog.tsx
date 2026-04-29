@@ -1,3 +1,4 @@
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -41,6 +42,40 @@ const steps = [
   },
 ];
 
+const faq = [
+  {
+    question: 'What is this app?',
+    answer: 'This app is a simple prayer time tracker for mosques. It shows the prayer times for the mosques near you.',
+  },
+  {
+    question: 'How do I add a bookmark?',
+    answer: 'Tap the bookmark icon on any mosque to save it. Access your saved mosques at any time from the Bookmarks tab in Settings.',
+  },
+  {
+    question: 'How the location is determined?',
+    answer: 'Initially the location is detect from your device GPS if it is failed then the location is determined by your IP address (approximated location), if it is also failed then the location is determined by the map.',
+  },
+  {
+    question: 'Showing wrong location or no location found?',
+    answer: 'If the location is wrong or no location found, please try to change the location in the Settings.',
+  },
+  {
+    question: 'How do I add a custom location?',
+    answer: 'Open Settings (⚙) and tap the "Custom Location" button to add a custom location.',
+  },
+  {
+    question: 'How do I change the search radius?',
+    answer: 'Open Settings (⚙) and change the search radius to your desired distance.',
+  },
+  {
+    question: 'How do I change the prayer calculation method?',
+    answer: 'Open Settings (⚙) and change the prayer calculation method to your desired method.',
+  },
+  {
+    question: 'How do I change the Asr school?',
+    answer: 'Open Settings (⚙) and change the Asr school to your desired school.',
+  },
+];
 export const HelpDialog = () => {
   return (
     <Dialog>
@@ -80,6 +115,30 @@ export const HelpDialog = () => {
             </li>
           ))}
         </ol>
+
+        {/* FAQ Section */}
+        <div className="mt-4">
+          <Accordion type="single" collapsible className="mt-2 w-full border border-gray-200 dark:border-gray-700 rounded-md p-2">
+            <AccordionItem value="faq">
+              <AccordionTrigger className="text-sm font-medium text-gray-900 dark:text-gray-100 p-0">
+                Frequently Asked Questions
+              </AccordionTrigger>
+              <AccordionContent className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mt-4 flex flex-col gap-1">
+                {faq.map((faqItem) => (
+                  <>
+                  <div key={faqItem.question} className="flex flex-col py-1">
+                    <p className="font-semibold text-gray-800 dark:text-gray-200">{faqItem.question}</p>
+                    <p className="italic text-gray-500 dark:text-gray-400">{faqItem.answer}</p>
+                  </div>
+                  <hr className="m-0" />
+                  </>
+                ))}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+     
+        </div>
+   
 
         <p className="mt-4 text-center text-xs text-gray-400 dark:text-gray-600">
           Prayer times are provided for informational purposes only.

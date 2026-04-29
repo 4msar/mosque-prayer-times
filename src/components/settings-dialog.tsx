@@ -62,16 +62,16 @@ export function SettingsDialog() {
         </DialogHeader>
 
         <Tabs defaultValue="general" className="mt-1">
-          <TabsList className="w-full">
-            <TabsTrigger value="general" className="flex-1 gap-1 text-xs sm:gap-1.5 sm:text-sm">
+          <TabsList className="w-full flex-col items-start text-left sm:flex-row sm:items-center h-auto gap-2">
+            <TabsTrigger value="general" className="flex-1 gap-1 text-xs sm:gap-1.5 sm:text-sm w-full sm:w-auto">
               <Settings2 className="h-3.5 w-3.5 shrink-0" />
               <span className="truncate">General</span>
             </TabsTrigger>
-            <TabsTrigger value="prayer-times" className="flex-1 gap-1 text-xs sm:gap-1.5 sm:text-sm">
+            <TabsTrigger value="prayer-times" className="flex-1 gap-1 text-xs sm:gap-1.5 sm:text-sm w-full sm:w-auto">
               <Clock className="h-3.5 w-3.5 shrink-0" />
               <span className="truncate">Prayer Times</span>
             </TabsTrigger>
-            <TabsTrigger value="bookmarks" className="flex-1 gap-1 text-xs sm:gap-1.5 sm:text-sm">
+            <TabsTrigger value="bookmarks" className="flex-1 gap-1 text-xs sm:gap-1.5 sm:text-sm w-full sm:w-auto">
               <Bookmark className="h-3.5 w-3.5 shrink-0" />
               <span className="truncate">Bookmarks</span>
               {bookmarks.length > 0 && (
@@ -169,7 +169,7 @@ export function SettingsDialog() {
                 <Label className="text-sm font-medium">Sort Results By</Label>
                 <p className="text-xs text-muted-foreground">How nearby mosques are ranked</p>
               </div>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <button
                   type="button"
                   onClick={() => setRankPreference('DISTANCE')}

@@ -1,4 +1,6 @@
+import { useSettingsStore } from '@/store/settings-store';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 export type Location = {
   latitude: number;
@@ -39,6 +41,7 @@ const getLocationFromIp = async (): Promise<Location | undefined> => {
 
 export const useGetLocation = () => {
   const [location, setLocation] = useState<Location>();
+  const { setLocationFromMap } = useSettingsStore();
 
   useEffect(() => {
     if (!('geolocation' in navigator)) {
@@ -59,7 +62,12 @@ export const useGetLocation = () => {
       },
       async () => {
         const loc = await getLocationFromIp();
-        if (loc) setLocation(loc);
+        if (loc) {
+          setLocation(loc);
+        } else {
+          toast.error('Failed to get location, choose a location from the map');
+          setLocationFromMap(true);
+        }
       },
       {
         enableHighAccuracy: true,

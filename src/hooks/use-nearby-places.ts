@@ -17,7 +17,7 @@ export const useGetNearByPlaces = (
   const findMosques = useCallback(() => {
     if (!map || !placesLib || !location) return;
 
-    const request = {
+    const request: google.maps.places.SearchNearbyRequest = {
       fields: [
         'displayName',
         'formattedAddress',

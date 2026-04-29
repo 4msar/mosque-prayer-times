@@ -39,7 +39,7 @@ export const WebMaps = () => {
   const { chooseLocationFromMap, setLocationFromMap } = useSettingsStore();
   const isOnline = useOnlineStatus();
 
-  const geoLocation = useGetLocation();
+  const {location: geoLocation, getLocation} = useGetLocation();
   const [currentLocation, setCurrentLocation] = useState<Location | null>(geoLocation ?? null);
 
   const { radius, rankPreference, darkMode } = useSettingsStore();
@@ -87,6 +87,7 @@ export const WebMaps = () => {
   };
 
   const handleLocateMe = useCallback(() => {
+    getLocation(true);
     if (!geoLocation) return;
 
     setCurrentLocation(geoLocation);
@@ -97,7 +98,7 @@ export const WebMaps = () => {
       lat: geoLocation.latitude,
       lng: geoLocation.longitude,
     });
-  }, [geoLocation, map, setLocationFromMap]);
+  }, [geoLocation, map, setLocationFromMap, getLocation]);
 
   useEffect(() => {
     if (geoLocation) {

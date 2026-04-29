@@ -1,5 +1,5 @@
 import { useSettingsStore } from '@/store/settings-store';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 export type Location = {
@@ -43,10 +43,20 @@ export const useGetLocation = () => {
   const [location, setLocation] = useState<Location>();
   const { setLocationFromMap } = useSettingsStore();
 
-  useEffect(() => {
+  const getLocation = useCallback((info = false) => {
     if (!('geolocation' in navigator)) {
+      if (info) {
+        toast.info(
+          'Geolocation is not supported by your browser, trying to use IP address as fallback'
+        );
+      }
       getLocationFromIp().then((loc) => {
-        if (loc) setLocation(loc);
+        if (loc) {
+          setLocation(loc);
+        } else {
+          toast.error('Failed to get location, choose a location from the map');
+          setLocationFromMap(true);
+        }
       });
       return;
     }
@@ -61,9 +71,15 @@ export const useGetLocation = () => {
         });
       },
       async () => {
+        if (info) {
+          toast.info('Failed to get location, trying to use IP address as fallback');
+        }
         const loc = await getLocationFromIp();
         if (loc) {
           setLocation(loc);
+          if (info) {
+            toast.success('Location found using IP address');
+          }
         } else {
           toast.error('Failed to get location, choose a location from the map');
           setLocationFromMap(true);
@@ -77,5 +93,9 @@ export const useGetLocation = () => {
     );
   }, []);
 
-  return location;
+  useEffect(() => {
+    getLocation();
+  }, [getLocation]);
+
+  return { location, getLocation };
 };

@@ -90,7 +90,7 @@ export const HelpDialog = () => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto no-scrollbar">
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto no-scrollbar">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-base">
             <HelpCircle className="h-4 w-4" />
